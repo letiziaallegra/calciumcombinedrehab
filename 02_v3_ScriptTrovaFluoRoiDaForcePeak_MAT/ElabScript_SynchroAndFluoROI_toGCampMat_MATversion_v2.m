@@ -9,7 +9,7 @@ clc
 %% Choice of the animal and trial day
 %UsbPort = 'M';
 %AnimalDir = [UsbPort,':\LENS\Animals Data STIM'];
-AnimalDir = ['C:\LENS\Data Leti'];
+AnimalDir = '/Users/alessandro/DATA/Imaging/matlab_sample_data';
 % AnimalDir = ['C:\Users\CNR-SSSUP\Desktop\DATI LENS\Animals_Data_Make_Mat_Seq_to_do'];
 
 %%%%%%%% Animal_Name
@@ -24,7 +24,7 @@ AnimalDir = ['C:\LENS\Data Leti'];
 % Animal_Name_choice = 'GCaMPChR2_26_stroke_LateRehab'; 
 
 Animal_Name_choice = 'GCampChR2_TOX1';
-
+Animal_Name_choice = 'GCaMP24';
 %%%%%%%% TrialDay
 % TrialDay_choice = '01';
 TrialDay_choice = [];
@@ -39,14 +39,14 @@ for lfcd=3:length(ListFolderAnimalDir)
     
     if length(AnimalName_buf)>5
         
-        if strcmp(AnimalName_buf(1:5),'GCaMP') & isdir([AnimalDir,'\',AnimalName_buf])
+        if strcmp(AnimalName_buf(1:5),'GCaMP') & isdir([AnimalDir,filesep,AnimalName_buf])
             %all of the animals in folder
             AnimalName_IndexList(indexAn,1) = lfcd;
             indexAn = indexAn+1;
             
         end
         
-        if strcmp(AnimalName_buf,Animal_Name_choice) & isdir([AnimalDir,'\',AnimalName_buf])
+        if strcmp(AnimalName_buf,Animal_Name_choice) & isdir([AnimalDir,filesep,AnimalName_buf])
             %one animal
             AnimalName_IndexList_One = lfcd;
             break
@@ -69,13 +69,13 @@ for anAn_i=1:length(AnimalName_IndexList)  %for Animale -> end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%% choice of the days to elaborate        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    AnimalCurrDir = dir([AnimalDir,'\',Animal_Name]);
+    AnimalCurrDir = dir([AnimalDir,filesep,Animal_Name]);
     indexDay = 1;
     
     for acd=3:length(AnimalCurrDir)
         AnimalDay_buf = AnimalCurrDir(acd,1).name;
         
-        if isdir([AnimalDir,'\',Animal_Name,'\',AnimalDay_buf])
+        if isdir([AnimalDir,filesep,Animal_Name,filesep,AnimalDay_buf])
             %all of the days of the animals in folder
             Days_IndexList(indexDay,1) = acd;
             indexDay = indexDay+1;
@@ -101,7 +101,7 @@ for anAn_i=1:length(AnimalName_IndexList)  %for Animale -> end
         TrialDay_Index = Days_IndexList(anD_i);
         TrialDay       = AnimalCurrDir(TrialDay_Index,1).name;
         
-        CurrAnDayFolder = [AnimalDir,'\',Animal_Name,'\',TrialDay];
+        CurrAnDayFolder = [AnimalDir,filesep,Animal_Name,filesep,TrialDay];
         CurrAnDayFolder_List = dir(CurrAnDayFolder);
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -115,17 +115,18 @@ for anAn_i=1:length(AnimalName_IndexList)  %for Animale -> end
                 
                 if strcmp(CurrAnDayFolder_List(cadf,1).name(1:3),'MAT')
                     %data images folder
-                    folderTASK_FLUO = [AnimalDir,'\',Animal_Name,'\',TrialDay,'\',CurrAnDayFolder_List(cadf,1).name];
+                    folderTASK_FLUO = [AnimalDir,filesep,Animal_Name,filesep,TrialDay,filesep,CurrAnDayFolder_List(cadf,1).name];
                 elseif length(CurrAnDayFolder_List(cadf,1).name)>7
                     if strcmp(CurrAnDayFolder_List(cadf,1).name(end-7:end-4),'sync')
                         %force file name
-                        folderTASK_ForceFileName = [AnimalDir,'\',Animal_Name,'\',TrialDay,'\',CurrAnDayFolder_List(cadf,1).name];
+                        folderTASK_ForceFileName = [AnimalDir,filesep,Animal_Name,filesep,TrialDay,filesep,CurrAnDayFolder_List(cadf,1).name];
                     end
                 end
                 
             end
             
         end
+        
         if isempty(folderTASK_FLUO) && isempty(folderTASK_ForceFileName)
             error([folderTASK_FLUO,' or ', folderTASK_ForceFileName, 'missing']);
         end
@@ -240,7 +241,7 @@ for anAn_i=1:length(AnimalName_IndexList)  %for Animale -> end
             
             nameImage = d(indexImage,1).name;
 
-            load([folderTASK_FLUO,'\',nameImage]);
+            load([folderTASK_FLUO,filesep,nameImage]);
             Im = Im8_fv;
             Im_Original = Im;          
             
@@ -399,7 +400,7 @@ for anAn_i=1:length(AnimalName_IndexList)  %for Animale -> end
         
         %%%%%%
         filename_GCamp = ['dataMouseGCamp_',Animal_Name,'_',TrialDay(1:2)];
-        save([CurrAnDayFolder,'\',filename_GCamp],'dataGCamp')
+        save([CurrAnDayFolder,filesep,filename_GCamp],'dataGCamp')
         %%%%%%
         
         
@@ -414,7 +415,7 @@ for anAn_i=1:length(AnimalName_IndexList)  %for Animale -> end
         plot(dataGCamp.t,dataGCamp.fluoROI/20,'g')
         legend([{'Status','Position','Force'},ROI_name])
         Day_Fig_filename = 'Fig_whole_sig';
-        saveas(figPl,[CurrAnDayFolder,'\',Day_Fig_filename],'fig');
+        saveas(figPl,[CurrAnDayFolder,filesep,Day_Fig_filename],'fig');
         pause(1.5)
         close(figPl)
         

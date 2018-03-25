@@ -2,6 +2,7 @@
 FunDir  = pwd;
 %PATH
 DirCurr = 'M:\LENS\Animals Data STIM\170511\RCAMP1A 11.04';
+DirCurr = '/Users/alessandro/DATA/Imaging/matlab_sample_data/GCaMP24/';
 
 ListSubFolder = dir(DirCurr);
 
@@ -13,7 +14,7 @@ for i=3:length(ListSubFolder)
     
     NameDay = ListSubFolder(i,1).name;
     
-    PathFile = [DirCurr,'\',NameDay];
+    PathFile = [DirCurr,filesep,NameDay];
     
     ListFile = dir(PathFile);
     

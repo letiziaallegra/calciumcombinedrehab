@@ -9,6 +9,7 @@ clc
 
 User = getenv('username');
 MainDir = ['C:\Users\asus\Desktop\to do'];
+MainDir = '/Users/alessandro/Dropbox/Code/Matlab/rehab_mat_algs/03b_Script_Flip_Find_References/Storage_Folder/to do';
 % MainDir       = [UsbPort,':\LENS\Script_Flip_Find_References'];
 %cartella dove mettere i dati 
 %WorkingDir    = [MainDir,'\Working_Folder'];
@@ -24,7 +25,7 @@ Size_CW = 5.25; %(mm)
 for mdf=3:length(MainDirFolder) %for MainDirFolder
     
     AnimalDir          = MainDirFolder(mdf,1).name;
-    AnimalDirDayFolder = dir([WorkingDir,'\',AnimalDir]);
+    AnimalDirDayFolder = dir([WorkingDir,filesep,AnimalDir]);
     trans_all  = [];
     degree_all = [];
     indexDay = 0;
@@ -33,9 +34,9 @@ for mdf=3:length(MainDirFolder) %for MainDirFolder
         
         indexDay = indexDay+1;
         DayImage     = AnimalDirDayFolder(adf,1).name;
-        DayDirFolder = dir([WorkingDir,'\',AnimalDir,'\',DayImage]);    
+        DayDirFolder = dir([WorkingDir,filesep,AnimalDir,filesep,DayImage]);    
         
-        Im16 = imread([WorkingDir,'\',AnimalDir,'\',DayImage]);
+        Im16 = imread([WorkingDir,filesep,AnimalDir,filesep,DayImage]);
         
         %16 bits -> 8 bits
         M16 = 2^16-1;
@@ -160,7 +161,7 @@ for mdf=3:length(MainDirFolder) %for MainDirFolder
     
         rot_transl = [degree_all trans_all];
         Animal_name = AnimalDir(1:end-4)
-        save([MainDir,'\',Animal_name,'_Rot_Trans_Par'],'rot_transl')
+        save([MainDir,filesep,Animal_name,'_Rot_Trans_Par'],'rot_transl')
 
 end
 

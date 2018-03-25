@@ -17,7 +17,7 @@ function batch_vWebCam_LENS_fun(PathFile,videofile, datafile)
 datapath  = PathFile;
 videopath = PathFile;
 
-obj = VideoReader([videopath,'\',videofile]); 
+obj = VideoReader([videopath,filesep,videofile]); 
 frame = read(obj,1);
 grayImm = rgb2gray(frame); 
 I = medfilt2(grayImm,[6 6]);
@@ -27,12 +27,12 @@ I = medfilt2(grayImm,[6 6]);
 display('Marker e LED images extracted')
 
 %position extraction
-resPos = extractPos_vWebCam_LENS([videopath,'\',videofile],videopath,P_Marker,rect_Marker, rect_LED);
+resPos = extractPos_vWebCam_LENS([videopath,filesep,videofile],videopath,P_Marker,rect_Marker, rect_LED);
 display('Position extracted')
 
 % resSync = synchronize('Pos.mat',datafile);
 targetPos = 8 ;
-[resSync newfilename]= synchronize_vWebCam_LENS_v3('Pos.mat',[datapath,'\',datafile], datapath,targetPos);
+[resSync newfilename]= synchronize_vWebCam_LENS_v3('Pos.mat',[datapath,filesep,datafile], datapath,targetPos);
 display('Signals Synced')
 cd(datapath)
 

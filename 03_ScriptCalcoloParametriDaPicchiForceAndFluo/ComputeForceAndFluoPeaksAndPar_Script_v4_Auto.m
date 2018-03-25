@@ -9,6 +9,7 @@ clc
 %%%%  Folder
 UsbPort = 'M';
 AnimalMainDir = ['C:\LENS\Data Leti'];
+AnimalMainDir = ['/Users/alessandro/DATA/Imaging/matlab_sample_data'];
 % AnimalMainDir = [UsbPort,':\LENS\Animals Data\NoBregmaREF'];
 % % AnimalMainDir = ['C:\Users\Stefano\Google Drive\Piattaforma Stefano\LENS_SSSA\ELABORAZIONE DATA\_Per_Prove'];
 %%%%%%%%
@@ -27,7 +28,8 @@ AnimalMainDir = ['C:\LENS\Data Leti'];
 
 %ListAnimalTogether = {  'GCampChR2_TOX2', 'GCampChR2_TOX3',  'GCampChR2_TOX4',  'GCampChR2_TOX5'};        
 
-ListAnimalTogether = {  'GCampChR2_TOX1'};        
+ListAnimalTogether = {  'GCampChR2_TOX1'};   
+ListAnimalTogether = {  'GCaMP24'};   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -38,7 +40,7 @@ for LATo = 1:length(ListAnimalTogether)
     Animal_Name                    = [ListAnimalTogether{LATo}]
     
     %%%%%%%%
-    AnimalCurrDir = [AnimalMainDir,'\',Animal_Name];
+    AnimalCurrDir = [AnimalMainDir,filesep,Animal_Name];
     ListFolderAnimalDir = dir(AnimalCurrDir);
     
     
@@ -46,15 +48,15 @@ for LATo = 1:length(ListAnimalTogether)
     for lfcd=3:length(ListFolderAnimalDir)
         
         DayCurrDir           = ListFolderAnimalDir(lfcd,1).name;
-        ListFolderDayCurrDir = dir([AnimalCurrDir,'\',DayCurrDir]);
+        ListFolderDayCurrDir = dir([AnimalCurrDir,filesep,DayCurrDir]);
         
         filename = ['dataMouseGCamp_',Animal_Name,'_',DayCurrDir(1:2),'.mat'];
         %     filename = ['dataMouseGCamp_',Animal_Name,'_',DayCurrDir(1:2),'_Par_MIP_Par.mat'];
         
-        if exist([AnimalCurrDir,'\',DayCurrDir,'\',filename])
+        if exist([AnimalCurrDir,filesep,DayCurrDir,filesep,filename])
             
             %load gcamp
-            load([AnimalCurrDir,'\',DayCurrDir,'\',filename])
+            load([AnimalCurrDir,filesep,DayCurrDir,filesep,filename])
             
             %sampling frequency
             Fs = dataGCamp.Info.Fs;
@@ -664,7 +666,7 @@ for LATo = 1:length(ListAnimalTogether)
             
             filename_GCamp = ['dataMouseGCamp_',dataGCamp.Info.Name,'_',dataGCamp.Info.Date,'_Par'];
             %     filename_GCamp = [filename];
-            save([AnimalCurrDir,'\',DayCurrDir,'\',filename_GCamp],'dataGCamp')
+            save([AnimalCurrDir,filesep,DayCurrDir,filesep,filename_GCamp],'dataGCamp')
             
             
             %     save(['C:\Users\CNR-SSSUP\Google Drive\Piattaforma Stefano\LENS_SSSA\ELABORAZIONE DATA\_data_MAT_GCamp_Store\',filename_GCamp],'dataGCamp')

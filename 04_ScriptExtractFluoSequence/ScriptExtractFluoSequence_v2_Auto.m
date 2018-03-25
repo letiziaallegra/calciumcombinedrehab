@@ -14,6 +14,8 @@ clc
 
 
 CurrDir = cd;
+AnimalMainDir = ['/Users/alessandro/DATA/Imaging/matlab_sample_data'];
+
 %%%%%%%%%%%
 % ListAnimalTogether = {      'GCaMPChR2_7_control', 'GCaMPChR2_17_control','GCaMPChR2_23_control','GCaMPChR2_24_control',...
 %                             'GCaMPChR2_8_stroke', 'GCaMPChR2_9_stroke', 'GCaMPChR2_19_stroke', 'GCaMPChR2_22_stroke','GCaMPChR2_25_stroke', 'GCaMPChR2_26_stroke'...
@@ -22,6 +24,7 @@ CurrDir = cd;
 %                             'GCaMPChR2_14_stroke_BoNT', 'GCaMPChR2_15_stroke_BoNT','GCaMPChR2_16_stroke_BoNT'};
                         
 ListAnimalTogether = { 'GCampChR2_TOX1','GCampChR2_TOX2'};      
+ListAnimalTogether = {  'GCaMP24'}; 
 
 %size of the cranial window (mm)
 %Size_CW = 4.4; %(mm)
@@ -39,17 +42,19 @@ for lat=1:length(ListAnimalTogether)
     %%%%  Folder
     UsbPort = 'M';
     AnimalDir     = ['C:\LENS\Data Leti'];
+    AnimalDir = ['/Users/alessandro/DATA/Imaging/matlab_sample_data'];
     % AnimalDir     = [UsbPort,':\LENS\Animals Data\NoBregmaREF'];
-    MainDir       = [AnimalDir,'\',Animal_name];
+    MainDir       = [AnimalDir,filesep,Animal_name];
     
     %%%%%%%% load Reference File %%%%%%%%%%%%%%%%%%%%%%%%
     RefDir      = ['C:\Users\asus\Google Drive\Piattaforma Stefano\ELABORAZIONE DATA\Script_Flip_Find_References\MAT_Rot_Trans'];
+    RefDir = ['/Users/alessandro/Dropbox/Code/Matlab/rehab_mat_algs/03b_Script_Flip_Find_References/MAT_Rot_Trans'];
     FileRefName = [Animal_name,'_Rot_Trans_Par.mat'];
-    if exist([RefDir,'\',FileRefName])
+    if exist([RefDir,filesep,FileRefName])
         % rot_transl
-        load([RefDir,'\',FileRefName]);
+        load([RefDir,filesep,FileRefName]);
     else
-        error([RefDir,'\',FileRefName,' is not present in the folder']);
+        error([RefDir,filesep,FileRefName,' is not present in the folder']);
     end
     
     
@@ -59,15 +64,15 @@ for lat=1:length(ListAnimalTogether)
         
         DayCurrDir = NumDaysFolder(nd_i,1).name;
         
-        if isdir([MainDir,'\',DayCurrDir])
+        if isdir([MainDir,filesep,DayCurrDir])
             
             filename = ['dataMouseGCamp_',Animal_name,'_',DayCurrDir(1:2),'_Par','.mat'];
             
             %%% Initial Check %%%
-            if exist([MainDir,'\',DayCurrDir,'\',filename])
+            if exist([MainDir,filesep,DayCurrDir,filesep,filename])
                 
                 %load file gCamp
-                load([MainDir,'\',DayCurrDir,'\',filename])
+                load([MainDir,filesep,DayCurrDir,filesep,filename])
                 
                 if isfield(dataGCamp,'PeaksPar_Fx_Fluo')
                     display('Check OK')
@@ -114,10 +119,10 @@ for lat=1:length(ListAnimalTogether)
             
             
             %%% data Images %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            if isdir([MainDir,'\',DayCurrDir,'\','MAT_trial'])
-                folderTASK_FLUO = [MainDir,'\',DayCurrDir,'\','MAT_trial'];
+            if isdir([MainDir,filesep,DayCurrDir,filesep,'MAT_trial'])
+                folderTASK_FLUO = [MainDir,filesep,DayCurrDir,filesep,'MAT_trial'];
             else
-                error([MainDir,'\',DayCurrDir,'\','MAT_trial',' folder does not exist'])
+                error([MainDir,filesep,DayCurrDir,filesep,'MAT_trial',' folder does not exist'])
             end
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             
@@ -175,7 +180,7 @@ for lat=1:length(ListAnimalTogether)
                 nameImage = d(indexImage,1).name;
                 
                 %load image
-                load([folderTASK_FLUO,'\',nameImage]);
+                load([folderTASK_FLUO,filesep,nameImage]);
                 Im = Im8_fv;
                 Im_Original = Im;
                 
@@ -227,7 +232,7 @@ for lat=1:length(ListAnimalTogether)
                         nameImage = d(indexImage,1).name;
                         
                         %load image
-                        load([folderTASK_FLUO,'\',nameImage]);
+                        load([folderTASK_FLUO,filesep,nameImage]);
                         Im = Im8_fv;
                         Im_Original = Im;
                         
@@ -299,7 +304,7 @@ for lat=1:length(ListAnimalTogether)
             ImageSequence.AfterCentralFrame   = AfterCentralFrame;
             ImageSequence.downsamplingfactor  = downsamplingfactor;
             
-            Folder_Seq_Name = [MainDir,'\',DayCurrDir,'\','SequenceLong'];
+            Folder_Seq_Name = [MainDir,filesep,DayCurrDir,filesep,'SequenceLong'];
             if ~isdir(Folder_Seq_Name)
                 
                 %make Folder where saving
@@ -307,14 +312,14 @@ for lat=1:length(ListAnimalTogether)
             end
             
             Filename = ['ImageSequence_',dataGCamp.Info.Name,'_',dataGCamp.Info.Date,'_CenFrame_',num2str(CentralFrame(1)),'_',num2str(CentralFrame(2)),'_ROI_',num2str(ROISelected)];
-            save([Folder_Seq_Name,'\',Filename],'ImageSequence','-v7.3');
+            save([Folder_Seq_Name,filesep,Filename],'ImageSequence','-v7.3');
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             
             
             %%%%%%% save images %%%%%%%%%%%%
             if SAVE_IMAGES_STACK == 1
                 
-                Folder_Seq_NameTIF = [MainDir,'\',DayCurrDir,'\',[ImageSequence.Name ,'_',ImageSequence.Date,'_SequenceLong_TIF']];
+                Folder_Seq_NameTIF = [MainDir,filesep,DayCurrDir,filesep,[ImageSequence.Name ,'_',ImageSequence.Date,'_SequenceLong_TIF']];
                 if ~isdir(Folder_Seq_NameTIF)
                     
                     %make Folder where saving
@@ -335,7 +340,7 @@ for lat=1:length(ListAnimalTogether)
                         %scaling
                         ImToSave_SCALED = (ImToSave-min_Im_norm_old) * (2^8-1-0)/(max_Im_norm_old-min_Im_norm_old);
 
-                        imwrite(uint8( ImToSave_SCALED),[Folder_Seq_NameTIF,'\',filenameImToSave,'.tif']);
+                        imwrite(uint8( ImToSave_SCALED),[Folder_Seq_NameTIF,filesep,filenameImToSave,'.tif']);
                     
                     end
                    
@@ -343,7 +348,7 @@ for lat=1:length(ListAnimalTogether)
                 clear ImToSave filenameImToSave ImToSave_SCALED
                 FilenameText_ToSave = ['_Info_',ImageSequence.Name,'_',ImageSequence.Date,'_Seq_Image'];
                 Text_ToSave         = [min_Im_norm_old max_Im_norm_old];
-                save([Folder_Seq_NameTIF,'\',FilenameText_ToSave,'.txt'],'Text_ToSave','-ASCII');
+                save([Folder_Seq_NameTIF,filesep,FilenameText_ToSave,'.txt'],'Text_ToSave','-ASCII');
                 
             end
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -353,7 +358,7 @@ for lat=1:length(ListAnimalTogether)
             display(['End Process for', Filename])
             clear MatrixImageSequence CentralFrame ROISelected BeforeCentralFrame AfterCentralFrame
         else
-            display([MainDir,'\',DayCurrDir,' is not a directory'])
+            display([MainDir,filesep,DayCurrDir,' is not a directory'])
             
         end
     end

@@ -112,10 +112,10 @@ res.LEDgrayscale= LED;
 
 CurrDir = pwd;
 cd(videopath)
-if strcmp(videopath(end),'\')
+if strcmp(videopath(end),filesep)
     save(strcat(videopath,'Pos.mat'),'res')
 else
-    save(strcat(videopath,'\Pos.mat'),'res')
+    save(strcat(videopath,filesep,'Pos.mat'),'res')
 end
 cd(CurrDir)
 

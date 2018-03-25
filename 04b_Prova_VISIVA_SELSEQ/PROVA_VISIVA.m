@@ -6,13 +6,14 @@ close all
 clc
 
 %%%
-Animale_Start  = 'GCampChR2_TOX1';
+Animale_Start  = 'GCaMP24';
 % Animale_Start  = [];
 
 %%%
 CURRFOLDER     = cd;
-%WORKING_FOLDER = [CURRFOLDER,'\','Sequenze_Trials_DATA'];
+%WORKING_FOLDER = [CURRFOLDER,filesep,'Sequenze_Trials_DATA'];
 WORKING_FOLDER = ['C:\Users\asus\Desktop\Sequence_Trials_DATA'];
+WORKING_FOLDER = ['/Users/alessandro/DATA/Imaging/matlab_sample_data'];
 %%%
 % Day_Start      = 'DAY';
 
@@ -26,24 +27,24 @@ for i_fA = 3:length(all_folder_animals) %for all animals
     animal_Name   = all_folder_animals(i_fA,1).name;
     Len_Animal_Name = length(animal_Name);
     
-%     if (strfind(animal_Name,'GCaMP') && isempty(Animale_Start)) || strcmp(animal_Name,Animale_Start) %if animal
-    if (contains(animal_Name,'GCamp') && isempty(Animale_Start)) || strcmp(animal_Name,Animale_Start) %if animal
+    if (contains(animal_Name,'GCaMP') && isempty(Animale_Start)) || strcmp(animal_Name,Animale_Start) %if animal
+%     if (contains(animal_Name,'GCamp') && isempty(Animale_Start)) || strcmp(animal_Name,Animale_Start) %if animal
         
-        all_folder_day = dir([WORKING_FOLDER,'\',animal_Name]);
+        all_folder_day = dir([WORKING_FOLDER,filesep,animal_Name]);
         
         for i_fD = 3:length(all_folder_day) %for all days
             
             folder_day = all_folder_day(i_fD,1).name;
             
-            %if (strfind(folder_day,'GCaMP')) %if day
-            if (strfind(folder_day,'GCamp')) %if day 
+            if (strfind(folder_day,'GCaMP')) %if day
+            %if (strfind(folder_day,'GCamp')) %if day 
                 %%% day
                 dayNum = folder_day(Len_Animal_Name+2:Len_Animal_Name+3);
                 
                 %%% current folder
-                Curr_folder = [WORKING_FOLDER,'\',animal_Name,'\',animal_Name,'_',dayNum,'_SequenceLong_TIF','\SequenceLong'];
+                Curr_folder = [WORKING_FOLDER,filesep,animal_Name,filesep,animal_Name,'_',dayNum,'_SequenceLong_TIF',filesep,'SequenceLong'];
                 %%% before loading ImageSequence
-                filenameDataSeq = [Curr_folder,'\','ImageSequence_',animal_Name,'_',dayNum,'_CenFrame_1_3_ROI_1'];
+                filenameDataSeq = [Curr_folder,filesep,'ImageSequence_',animal_Name,'_',dayNum,'_CenFrame_1_3_ROI_1'];
                 
                 if exist([filenameDataSeq,'.mat'],'file') == 2
                     %%% loading ImageSequence
@@ -117,14 +118,14 @@ for i_fA = 3:length(all_folder_animals) %for all animals
                     %save DataInfoSequence
                     DataInfoSequence = [x_all,  y_all, Ok_No_par_all];
                     filename_Data = ['DataInfoSequence_', animal_Name, '_', dayNum];
-                    save([Curr_folder,'\',filename_Data], 'DataInfoSequence');
+                    save([Curr_folder,filesep,filename_Data], 'DataInfoSequence');
                     
                     %save DataInfoSequence
                     figure('Name','Scatter Plot')
                     scatter(y_all,x_all);
                     filename_Image = ['Scatter Plot_',animal_Name, '_', dayNum,'_FIG'];
-                    saveas(gca,[Curr_folder,'\',filename_Image],'fig');
-                    saveas(gca,[Curr_folder,'\',filename_Image],'jpeg');
+                    saveas(gca,[Curr_folder,filesep,filename_Image],'fig');
+                    saveas(gca,[Curr_folder,filesep,filename_Image],'jpeg');
                     close
                     
                      display(['Animal: ', animal_Name,' Day: ', dayNum,' done and saved']);

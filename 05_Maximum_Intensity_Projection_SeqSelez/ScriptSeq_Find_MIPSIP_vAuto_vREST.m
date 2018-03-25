@@ -1,7 +1,7 @@
 % Sequence of frames with a central one
 % TrOK = [1:26];
 % TrOK = [13];
-% posPlot = [5 10 25 9];
+% filesepPlot = [5 10 25 9];
 
 
 clear all
@@ -29,6 +29,7 @@ UsbPort = 'F';
 % Animal_name = 'GCaMPChR2_22_stroke';
 % Animal_name = 'GCaMPChR2_25_stroke';
 Animal_name = 'GCaMPChR2_26_stroke';
+Animal_name = 'GCaMP24';
 
 % Animal_name = 'GCaMP16_stroke_BoNT';
 % Animal_name = 'GCaMP17_stroke_BoNT';
@@ -47,21 +48,23 @@ Animal_name = 'GCaMPChR2_26_stroke';
 MIP_tech_List = {'max','sum'};
 %%%%%%%%%%%
 
-MainDir = [UsbPort,':\LENS\Animals Data\',Animal_name,'\'];
+MainDir = [UsbPort,':\LENS\Animals Data\',Animal_name,filesep];
+MainDir = ['/Users/alessandro/DATA/Imaging/matlab_sample_data'];
 NumDaysFolder = dir(MainDir);
 
 
 %%%%%%%% load Reference File %%%%%%%%%%%%%%%%%%%%%%%%
 RefDir      = ['C:\Users\',UserName,'\Google Drive\Piattaforma Stefano\ELABORAZIONE DATA\Script_Flip_Find_References\MAT_Rot_Trans'];
+RefDir      = ['/Users/alessandro/Dropbox/Code/Matlab/rehab_mat_algs/03b_Script_Flip_Find_References/MAT_Rot_Trans'];
 FileRefName = [Animal_name,'_Rot_Trans_Par.mat'];
-if exist([RefDir,'\',FileRefName])
+if exist([RefDir,filesep,FileRefName])
     % rot_transl
-    load([RefDir,'\',FileRefName]);
+    load([RefDir,filesep,FileRefName]);
 else
-    error([RefDir,'\',FileRefName,' is not present in the folder']);
+    error([RefDir,filesep,FileRefName,' is not present in the folder']);
 end
 
-
+Animal_name = 'GCaMP24';
 MIP_Th_Dil_filt_All_Day = [];
 
 degree_all = [];
@@ -78,7 +81,7 @@ for iMT=1:length(MIP_tech_List)
         nday_date = NumDaysFolder(nd_i,1).name;
         nday      = nday_date(1:2);
         
-        DirDay = [MainDir,nday_date,'\','Sequence_REST'];
+        DirDay = [MainDir,nday_date,filesep,'Sequence_REST'];
         
         SeqDir = dir(DirDay);
         
@@ -89,7 +92,7 @@ for iMT=1:length(MIP_tech_List)
             SeqDirOKNO = 1;
             
             %load Image Sequence
-            load([DirDay,'\',SeqDir(3,1).name])
+            load([DirDay,filesep,SeqDir(3,1).name])
             
             %%% Initial Check %%%
             if ~exist('ImageSequence')
@@ -98,7 +101,7 @@ for iMT=1:length(MIP_tech_List)
             %%%
             
             %%% Dir where saving
-            DirDayToSaveMIP = [MainDir,nday_date,'\','MIP_REST'];
+            DirDayToSaveMIP = [MainDir,nday_date,filesep,'MIP_REST'];
             if ~isdir(DirDayToSaveMIP)
                 %make Folder where saving
                 mkdir(DirDayToSaveMIP)
@@ -188,7 +191,7 @@ for iMT=1:length(MIP_tech_List)
 %                         h_rect = imrect(gca, [10 10 30 30]); %-> finestra
 %                         pause
 %                         
-%                         rect_Remov = round(getPosition(h_rect));
+%                         rect_Remov = round(getfilesepition(h_rect));
 %                         MIP(rect_Remov(2):rect_Remov(2)+rect_Remov(4),rect_Remov(1):rect_Remov(1)+rect_Remov(3)) = 0;
 %                         
 %                     case 2
@@ -351,8 +354,8 @@ for iMT=1:length(MIP_tech_List)
             
             %
             H_MIP_Fig_filename = [Animal_name,'_',MIP_tech,'MIP_REST_Fig_',nday];
-            saveas(H_MIP_Fig,[DirDayToSaveMIP,'\',H_MIP_Fig_filename],'fig');
-            saveas(H_MIP_Fig,[DirDayToSaveMIP,'\',H_MIP_Fig_filename],'tif');
+            saveas(H_MIP_Fig,[DirDayToSaveMIP,filesep,H_MIP_Fig_filename],'fig');
+            saveas(H_MIP_Fig,[DirDayToSaveMIP,filesep,H_MIP_Fig_filename],'tif');
             
             
             %all days together
@@ -372,8 +375,8 @@ for iMT=1:length(MIP_tech_List)
     hold on
     text(XbN,YbN, 'X','Color','red','FontSize',10);
     changeLabel_MIP(rw,cl)
-    saveas(MIP_All_Day_Fig,[MainDir,'\',MIP_All_Day_Fig_filename_week],'fig');
-    saveas(MIP_All_Day_Fig,[MainDir,'\',MIP_All_Day_Fig_filename_week],'tif');
+    saveas(MIP_All_Day_Fig,[MainDir,filesep,MIP_All_Day_Fig_filename_week],'fig');
+    saveas(MIP_All_Day_Fig,[MainDir,filesep,MIP_All_Day_Fig_filename_week],'tif');
     
     %save Im_med mat
     save([MainDir,'\Im_AlongDays_',Animal_name,'_MIP_REST_',MIP_tech],'Im_med')
@@ -408,8 +411,8 @@ for iMT=1:length(MIP_tech_List)
             hold on
             text(XbN,YbN, 'X','Color','red','FontSize',10);
             changeLabel_MIP(rw,cl)
-            saveas(MIP_All_Day_Fig,[MainDir,'\',MIP_All_Day_Fig_filename_week],'fig');
-            saveas(MIP_All_Day_Fig,[MainDir,'\',MIP_All_Day_Fig_filename_week],'tif');
+            saveas(MIP_All_Day_Fig,[MainDir,filesep,MIP_All_Day_Fig_filename_week],'fig');
+            saveas(MIP_All_Day_Fig,[MainDir,filesep,MIP_All_Day_Fig_filename_week],'tif');
     
             save([MainDir,'\Im_AlongDays_Week_',num2str(wee_i),'_',Animal_name,'_MIP_REST_',MIP_tech],'Im_med')
             
