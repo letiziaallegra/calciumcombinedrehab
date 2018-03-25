@@ -1,0 +1,9 @@
+# ignore everything
+*
+# but descend into directories
+!*/
+# include all .m files
+!*.m
+!*/*.m
+!*/**/*.m
+!.gitignore

@@ -1,0 +1,312 @@
+% Script to make Isochrones from Sequence_LONG
+clear all
+close all
+clc
+
+%%%%%%%%%%%
+CurrDir = cd;
+
+% ListAnimalTogether = {      'GCaMPChR2_7_control'};
+
+ListAnimalTogether = {      'GCaMPChR2_7_control','GCaMPChR2_17_control','GCaMPChR2_23_control','GCaMPChR2_24_control',...
+                            'GCaMPChR2_8_stroke', 'GCaMPChR2_9_stroke', 'GCaMPChR2_19_stroke', 'GCaMPChR2_22_stroke','GCaMPChR2_25_stroke', 'GCaMPChR2_26_stroke'...
+                            'GCaMP16_stroke_BoNT','GCaMP18_stroke_BoNT',...
+                            'GCaMPChR2_11_stroke_BoNT', 'GCaMPChR2_12_stroke_BoNT',...
+                            'GCaMPChR2_14_stroke_BoNT', 'GCaMPChR2_15_stroke_BoNT','GCaMPChR2_16_stroke_BoNT'};
+
+                        
+%                         
+% %MEAN or MEDIAN
+% MeaMed = 1; %MEAN
+% % MeaMed = 2; %MEDIAN
+
+for MeaMed=1:2
+        
+    
+    %Folder SAVE
+    if MeaMed == 1
+        SAVEFOLDER   = 'Data_Isochrones_SelSeq_MAX\Data_Delay_Mean of Trials';
+        SAVEFILENAME = 'DataIm_Mean_Delay_All_Days_';
+    elseif MeaMed == 2
+        SAVEFOLDER   = 'Data_Isochrones_SelSeq_MAX\Data_Delay_Median of Trials';
+        SAVEFILENAME = 'DataIm_Median_Delay_All_Days_';
+    end
+    
+    
+    for lat=1:length(ListAnimalTogether)
+        
+        UserName = 'CNR-SSSUP';
+        UsbPort = 'I';
+%             UserName = 'Stefano';
+%             UsbPort = 'F';
+        
+        %%%%REGION OF INTEREST
+        Resol     = 512;
+        Resol_SQ  = Resol^2;
+        N_reg     = 1024;                 %total number of region
+        %         N_reg     = 128;                 %total number of region
+        N_reg_Per_Border = sqrt(N_reg); %number of region for each region
+        Lat       = Resol/N_reg_Per_Border; %Size of the border of each region
+        %     Lat       = sqrt(Resol_SQ/N_reg); %Size of the border of each region
+        %%%%
+        
+        %%% Frequency
+        Fs = 25;
+        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        Animal_name = ListAnimalTogether{lat};
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        MainDir = [UsbPort,':\LENS\Animals Data\',Animal_name,'\'];
+        NumDaysFolder = dir(MainDir);
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+        
+        %%%%%%%% load Reference File %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        RefDir      = ['C:\Users\',UserName,'\Google Drive\Piattaforma Stefano\ELABORAZIONE DATA\Script_Flip_Find_References\MAT_Rot_Trans'];
+        FileRefName = [Animal_name,'_Rot_Trans_Par.mat'];
+        if exist([RefDir,'\',FileRefName])
+            % rot_transl
+            load([RefDir,'\',FileRefName]);
+        else
+            error([RefDir,'\',FileRefName,' is not present in the folder']);
+        end
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+        MIP_Th_Dil_filt_All_Day = [];
+        
+        degree_all = [];
+        trans_all  = [];
+        
+        for nd_i=3:length(NumDaysFolder) %for days
+            
+            index_day = nd_i-2;
+            nday_date = NumDaysFolder(nd_i,1).name;
+            nday      = nday_date(1:2);
+            
+            %Sequence of frames (all of frames are taken in SequenceLong)
+            DirDay      = [MainDir,nday_date];
+            DirDaySeq   = [DirDay,'\','SequenceLong'];
+            SeqDir      = dir(DirDaySeq);
+            
+            
+            if  ~isempty(SeqDir) %if SeqDir
+                
+                %seq ok
+                SeqDirOKNO = 1;
+                
+                %load Image Sequence -> ImageSequence
+                if exist([DirDaySeq,'\','ImageSequence_',Animal_name,'_',nday,'_CenFrame_1_3_ROI_1.mat'])
+                    load([DirDaySeq,'\','ImageSequence_',Animal_name,'_',nday,'_CenFrame_1_3_ROI_1']);
+                else
+                    error(['ImageSequence_',Animal_name,'_',nday,'_CenFrame_1_3_ROI_1 missing'])
+                end
+                %load file info Seq -> DataInfoSequence
+                if exist([DirDaySeq,'\','DataInfoSequence_',Animal_name,'_',nday,'.mat'])
+                    load([DirDaySeq,'\','DataInfoSequence_',Animal_name,'_',nday]);
+                else
+                    error(['DataInfoSequence_',Animal_name,'_',nday,' missing'])
+                end
+                %load datamouse -> dataGCamp
+                if exist([DirDay,'\','dataMouseGCamp_',Animal_name,'_',nday(1:2),'_Par','.mat'])
+                    load([DirDay,'\','dataMouseGCamp_',Animal_name,'_',nday(1:2),'_Par','.mat']);
+                    %delay of the max of force peak with respect to the force onset (9 = central frame in ImageSequence)
+                    dataDelayMaxForce = round((dataGCamp.PeaksPar_Fx_Fluo{1,1}(:,6) - dataGCamp.PeaksPar_Fx_Fluo{1,1}(:,3) ) * Fs) + 9;
+                else
+                    error(['dataMouseGCamp_',Animal_name,'_',nday(1:2),'_Par',' is missing'])
+                end
+                
+                %%%%%%%%%%%%
+                
+                
+                %%%%%%%%% DAILY TASK SESSION %%%%%%%%%%%%%
+                MatrixImageSequence = ImageSequence.MatrixImageSequence;
+                NumTrials           = size(MatrixImageSequence,1);
+                
+                %trials used
+                TrialsUsed = find(DataInfoSequence(:,3)==1);
+                NumTrialsUsed = length(TrialsUsed);
+                
+                rw                  = size(MatrixImageSequence{1,1},1);
+                cl                  = size(MatrixImageSequence{1,1},2);
+                NumFrames           = size(MatrixImageSequence{1,1},3);
+                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                
+                ind_i = 0;
+                ImDelay = [];
+                
+                
+                if NumTrialsUsed > 0 %if num trials
+                    for int=1:NumTrialsUsed %for trials
+                        
+                        %%initialization of the image with a total number of region = N_reg.
+                        %%The third dimension of ROI_VALUE are the frames related to that trial
+                        ROI_VALUE = zeros(round(Resol/Lat),round(Resol/Lat),NumFrames);
+                        
+                        %delay of the current max peak of force
+                        dataDelayMaxForce_CurrTrUsed = dataDelayMaxForce(TrialsUsed(int),1);
+                        
+                        for inf=1:NumFrames %for frames in the trial i-th
+                            
+                            
+                            Frame_ith = MatrixImageSequence{TrialsUsed(int),:}(:,:,inf);
+                            
+                            %%roto-translation of the frame i-th
+                            Frame_ith = RotoTrans_Image( Frame_ith, rot_transl, nday, rw, cl);
+                            
+                            %%fill ROI_VALUE for that trials (3rd dim -> frames)
+                            for n_reg_col=1:round(Resol/Lat) %for # num regions-col in the Frame_ith // direction sx->dx
+                                
+                                index_col = n_reg_col-1;
+                                
+                                C_st = Lat*index_col+1;
+                                C_en = C_st+Lat-1;
+                                
+                                for n_reg_row=1:round(Resol/Lat) %for # num regions-row in the Frame_ith // direction alto->basso
+                                    
+                                    index_row = n_reg_row-1;
+                                    
+                                    R_st = Lat*index_row+1;
+                                    R_en = R_st+Lat-1;
+                                    
+                                    ROI_SQUARED = Frame_ith( C_st:C_en, R_st:R_en);
+                                    
+                                    %%%
+                                    ROI_VALUE(n_reg_row, n_reg_col, inf) = median(median(ROI_SQUARED));
+                                    %%%
+                                    
+                                    % %                             figure
+                                    % %                             imagesc(ROI_SQUARED)
+                                    %                             Frame_ith_Buf = Frame_ith*0;
+                                    %                             Frame_ith_Buf( R_st:R_en , C_st:C_en) = 1;
+                                    %                             figure
+                                    %                             imagesc(Frame_ith_Buf)
+                                    %                             pause(0.05);
+                                    %                             close
+                                    
+                                    
+                                end %end for # num regions-row in the Frame_ith // direction alto->basso
+                                
+                            end %end for # num regions-col in the Frame_ith // direction sx->dx
+                            
+                        end % end for frames in the trial i-th
+                        
+                        
+                        %                 FF=figure
+                        
+                        %%%
+                        Seq_Delay = [];
+                        inc         = 0;
+                        CentFrame = ImageSequence.CentFrame;
+                        %%%
+                        
+                        
+                        
+                        for Roi_rw=1:size(ROI_VALUE,1) %for ROI row
+                            
+                            for Roi_cl=1:size(ROI_VALUE,2) %for ROI col
+                                
+%                                 figure(FF)
+%                                 hold on
+                                Seq  = squeeze(ROI_VALUE(Roi_rw,Roi_cl,:));
+                                SeqF = cheb2LPfilt(Seq,9,2,Fs);
+                                
+                                CheckSeq = SeqF-SeqF(1);
+                                
+                                if all(~CheckSeq)
+                                    StartFluoPeak = NaN;
+                                    inc = inc+1;
+                                else                                    
+                                    
+                                    %compute the maximum of the sequence
+                                    [MAX_SeqF i_MAX_SeqF] = max(SeqF); 
+                                    
+                                    StartFluoPeak = i_MAX_SeqF(1);
+                                    
+                                   
+                                    inc = inc+1;
+                                    
+%                                                                 %%%%%plot
+%                                                                 SeqF = SeqF - SeqF(1);
+%                                                                 plot( SeqF -5*inc);
+%                                                                 hold on
+%                                                                 if ~isnan(StartFluoPeak)
+%                                                                     plot( StartFluoPeak, SeqF(StartFluoPeak) -5*inc ,'-o')
+%                                                                 end
+%                                                                 %%%%%%
+                                    
+                                end
+                                
+                                %save the delay (max fluo - max force) for each ROI
+                                Seq_Delay = [Seq_Delay; (StartFluoPeak - dataDelayMaxForce_CurrTrUsed)/Fs];
+                                
+                            end %end for ROI col
+                            
+                        end %end for ROI row
+                        
+%                         %%%%%%plot
+%                         hold on
+%                         plot([CentFrame CentFrame], [5 -320],'r')
+%                         ylim([-320 5])
+%                         xlim([0 400])
+%                         %
+%                         %                 figure
+%                         %                 plot(Seq_Delay,'-o');
+%                         %
+%                         figure
+%                         imagesc(reshape(Seq_Delay,size(ROI_VALUE,1),size(ROI_VALUE,2)))
+%                         colorbar
+%                         %%%%%%
+                        
+                        
+                        %save the image -> in each ROI(square) is saved the value of the Delay (for the j-th Trial)
+                        ImDelay(:,:,int) = reshape(Seq_Delay,size(ROI_VALUE,1),size(ROI_VALUE,2));
+                        
+                    end
+                    
+                else %if num trials == 0
+                    
+                    ImDelay = zeros(round(Resol/Lat),round(Resol/Lat),1)*NaN;
+                    
+                end %end if num trials
+                %%%%%%%%%%%%%%%%%%%%%%%%%%
+                
+                
+                figure
+                
+                %Folder SAVE
+                if MeaMed == 1
+                    ImDelay_Day = nanmean(ImDelay,3);
+                elseif  MeaMed == 2
+                    ImDelay_Day = nanmedian(ImDelay,3);
+                end
+                
+                ImDelay_Day_M = medfilt2(ImDelay_Day);
+                imagesc(ImDelay_Day_M)
+                colorbar
+%                 caxis([-0.3 0.3])
+                saveas(gca,[CurrDir,'\',SAVEFOLDER,'\',Animal_name,'_',nday,'_','IsoChronesFig_M',num2str(N_reg)],'fig')
+                saveas(gca,[CurrDir,'\',SAVEFOLDER,'\',Animal_name,'_',nday,'_','IsoChronesFig_M',num2str(N_reg)],'jpeg')
+                close all
+                
+                
+                %store the average value of the Delay (for each squared ROI) in the z-th day
+                ImDelay_Day_M_All(:,:,index_day) = ImDelay_Day_M;
+                
+                clear ImDelay ImDelay_Day ImDelay_Day_M
+                
+            end %end if SeqDir
+            
+        end %end for days
+        
+        %save all info
+        save([CurrDir,'\',SAVEFOLDER,'\',SAVEFILENAME, Animal_name],'ImDelay_Day_M_All');
+        
+        clear ImDelay_Day_M_All;
+        
+    end
+    
+    display('End Process')
+    
+end %MEAN MED
