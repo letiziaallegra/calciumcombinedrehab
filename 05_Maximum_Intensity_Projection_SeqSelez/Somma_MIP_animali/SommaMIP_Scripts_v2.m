@@ -12,7 +12,7 @@ clc
 User = getenv('USERNAME');
 
 folder = ['C:\Users\',User,'\Google Drive\Piattaforma Stefano\ELABORAZIONE DATA\05_Maximum_Intensity_Projection_SeqSelez\_Store_MIP_SIP_all_Days_and_MAT'];
-
+folder = ['/Users/alessandro/Desktop/ELABORAZIONE DATA/05_Maximum_Intensity_Projection_SeqSelez/_Store_MIP_SIP_all_Days_and_MAT/'];
 
 % ListAnimalTogether = {  'GCaMPChR2_7_control','GCaMPChR2_17_control','GCaMPChR2_23_control','GCaMPChR2_24_control',...
 %                         ...
@@ -47,22 +47,22 @@ for i=1:length(ListAnimalTogether)
 
         if strfind(folderAn,'stroke_BoNT')
             %rehab 1
-            fileA = load( [folder,'\',folderAn,'\','Im_AlongDays_Week_1_',folderAn,'_Long_SelSeq_MIP']);
+            fileA = load( [folder,filesep,folderAn,filesep,'Im_AlongDays_Week_1_',folderAn,'_Long_SelSeq_MIP']);
             MIP_max_REHAB1  = MIP_max_REHAB1+fileA.Im_med/max(max(fileA.Im_med));
             clear fileA
             %rehab 4
-            fileA = load( [folder,'\',folderAn,'\','Im_AlongDays_Week_4_',folderAn,'_Long_SelSeq_MIP']);
+            fileA = load( [folder,filesep,folderAn,filesep,'Im_AlongDays_Week_4_',folderAn,'_Long_SelSeq_MIP']);
             MIP_max_REHAB4  = MIP_max_REHAB4+fileA.Im_med/max(max(fileA.Im_med));
             clear fileA
             
            
             %rehab 1
-            fileA = load( [folder,'\',folderAn,'\','Im_AlongDays_Week_1_',folderAn,'_Long_SelSeq_SIP']);
+            fileA = load( [folder,filesep,folderAn,filesep,'Im_AlongDays_Week_1_',folderAn,'_Long_SelSeq_SIP']);
             imagesc(double(fileA.Im_med/max(max(fileA.Im_med))>Th_single))
             MIP_sum_REHAB1  = MIP_sum_REHAB1+double(fileA.Im_med/max(max(fileA.Im_med))>Th_single);
             clear fileA
             %rehab 4
-            fileA = load( [folder,'\',folderAn,'\','Im_AlongDays_Week_4_',folderAn,'_Long_SelSeq_SIP']);
+            fileA = load( [folder,filesep,folderAn,filesep,'Im_AlongDays_Week_4_',folderAn,'_Long_SelSeq_SIP']);
             imagesc(double(fileA.Im_med/max(max(fileA.Im_med))>Th_single))
             MIP_sum_REHAB4  = MIP_sum_REHAB4+double(fileA.Im_med/max(max(fileA.Im_med))>Th_single);
             clear fileA
@@ -72,11 +72,11 @@ for i=1:length(ListAnimalTogether)
             
         elseif strfind(folderAn,'stroke')
             %stroke
-            fileA = load( [folder,'\',folderAn,'\','Im_AlongDays_',folderAn,'_Long_SelSeq_MIP']);
+            fileA = load( [folder,filesep,folderAn,filesep,'Im_AlongDays_',folderAn,'_Long_SelSeq_MIP']);
             MIP_max_STROKE = MIP_max_STROKE+fileA.Im_med/max(max(fileA.Im_med));
             clear fileA
             
-            fileA = load( [folder,'\',folderAn,'\','Im_AlongDays_',folderAn,'_Long_SelSeq_SIP']);
+            fileA = load( [folder,filesep,folderAn,filesep,'Im_AlongDays_',folderAn,'_Long_SelSeq_SIP']);
             imagesc(double(fileA.Im_med/max(max(fileA.Im_med))>Th_single))
             MIP_sum_STROKE  = MIP_sum_STROKE+double(fileA.Im_med/max(max(fileA.Im_med))>Th_single);
             clear fileA
@@ -85,11 +85,11 @@ for i=1:length(ListAnimalTogether)
             
         elseif strfind(folderAn,'control')
             %control
-            fileA = load( [folder,'\',folderAn,'\','Im_AlongDays_',folderAn,'_Long_SelSeq_MIP']);
+            fileA = load( [folder,filesep,folderAn,filesep,'Im_AlongDays_',folderAn,'_Long_SelSeq_MIP']);
             MIP_max_CONTROL = MIP_max_CONTROL+fileA.Im_med/max(max(fileA.Im_med));
             clear fileA
             
-            fileA = load( [folder,'\',folderAn,'\','Im_AlongDays_',folderAn,'_Long_SelSeq_SIP']);
+            fileA = load( [folder,filesep,folderAn,filesep,'Im_AlongDays_',folderAn,'_Long_SelSeq_SIP']);
             imagesc(double(fileA.Im_med/max(max(fileA.Im_med))>Th_single))
             MIP_sum_CONTROL  = MIP_sum_CONTROL+double(fileA.Im_med/max(max(fileA.Im_med))>Th_single);
             clear fileA

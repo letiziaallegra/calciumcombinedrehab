@@ -29,40 +29,69 @@ LED(1)=0;
 
 %visualizza waitbar
 h = waitbar(0,'Please wait...');
+fh = figure();
+video = rgb2gray(readFrame(obj));
+
+video(rect_Marker(2):rect_Marker(2)+rect_Marker(4),rect_Marker(1))=256;
+video(rect_Marker(2),rect_Marker(1):rect_Marker(1)+rect_Marker(3))=256;
+video(rect_Marker(2):rect_Marker(2)+rect_Marker(4),rect_Marker(1)+rect_Marker(3))=256;
+video(rect_Marker(2)+rect_Marker(4),rect_Marker(1):rect_Marker(1)+rect_Marker(3))=256;
+
+video(rect_LED(2):rect_LED(2)+rect_LED(4),rect_LED(1))=256;
+video(rect_LED(2),rect_LED(1):rect_LED(1)+rect_LED(3))=256;
+video(rect_LED(2):rect_LED(2)+rect_LED(4),rect_LED(1)+rect_LED(3))=256;
+video(rect_LED(2)+rect_LED(4),rect_LED(1):rect_LED(1)+rect_LED(3))=256;
+imshow(video)
+
+
+
 
 for i=2:totalframes
-        
-    display(strcat(num2str((i/totalframes)*100),'_% completed'))
+    obj.set('CurrentTime',0)
+    
     framenumber=i;
     % aggiorna waitbar 
     waitbar(framenumber / totalframes)
     
     %load frame
     obj.CurrentTime=framenumber/obj.FrameRate;
-    video = readFrame(obj);
+    video = rgb2gray(readFrame(obj));
     %video = read(obj,framenumber);
 
     %rgb->gray
-    grayImm = rgb2gray(video(...
+    grayImm = video(...
                     rect_Marker(2):rect_Marker(2)+rect_Marker(4),...
                     rect_Marker(1):rect_Marker(1)+rect_Marker(3),...
-                    :));
+                    :);
                 
-    grayImmLED = rgb2gray(video(...
+    grayImmLED = video(...
                     rect_LED(2):rect_LED(2)+rect_LED(4),...
                     rect_LED(1):rect_LED(1)+rect_LED(3),...
-                    :));            
+                    :);    
+    if mod(i,10)==0         
+        display(strcat(num2str((i/totalframes)*100),['_% completed ',videopath]))
+        video(rect_Marker(2):rect_Marker(2)+rect_Marker(4),rect_Marker(1))=256;
+        video(rect_Marker(2),rect_Marker(1):rect_Marker(1)+rect_Marker(3))=256;
+        video(rect_Marker(2):rect_Marker(2)+rect_Marker(4),rect_Marker(1)+rect_Marker(3))=256;
+        video(rect_Marker(2)+rect_Marker(4),rect_Marker(1):rect_Marker(1)+rect_Marker(3))=256;
+
+        video(rect_LED(2):rect_LED(2)+rect_LED(4),rect_LED(1))=256;
+        video(rect_LED(2),rect_LED(1):rect_LED(1)+rect_LED(3))=256;
+        video(rect_LED(2):rect_LED(2)+rect_LED(4),rect_LED(1)+rect_LED(3))=256;
+        video(rect_LED(2)+rect_LED(4),rect_LED(1):rect_LED(1)+rect_LED(3))=256;
+        imshow(video)
+    end
     %filtering
-    filtImm = medfilt2(grayImm,[filtwind filtwind]);
+    % filtImm = medfilt2(grayImm,[filtwind filtwind]);
     filtImmLED = medfilt2(grayImmLED,[filtwind filtwind]);
      
     %bw Marker
     %bw = im2bw(grayImm,245/255);
-    bw = im2bw(grayImm,50/255);
+    bw = im2bw(grayImm,20/255);
     
     %erode Marker
     %se = strel('disk',10); 
-    se = strel('disk',20);
+    se = strel('disk',18);
     imer = imerode(bw,se);
     
     
@@ -95,7 +124,10 @@ for i=2:totalframes
      end     
        
 end
-
+try
+    close(h)
+catch
+end
 X_temp = zeros(size(X));
 %inverto x con y
 X_temp(:,1) = X(:,1);  %in questo caso l'asse x di pulling  è visto dalla telecamera come un asse y 
@@ -107,8 +139,41 @@ plot(0:1/25:(totalframes-1)/25,X_temp(:,1))
 subplot(2,1,2), 
 plot(0:1/25:(totalframes-1)/25,X_temp(:,2))
 
+%%fixes the different frame rate
+fs = 25; %assumed to be 25
+if obj.FrameRate ~= fs
+    ra = rats(fs/obj.FrameRate);
+    pq=double(split(ra,'/'));
+    if pq ~= 1
+        LED = resample(LED,pq(1),pq(2),0);
+        X_temp = resample(X_temp,pq(1),pq(2),0);
+    end
+end
+
 res.X = X_temp;
 res.LEDgrayscale= LED;
+
+
+
+
+%some data cleaning Alessandro Scaglione 180329
+%clearly the LED cannot be on for small timewindows when the position is
+%not at maximum or minimum. Removing those data points if any.
+intervals = reshape(find(diff(LED)~=0),2,[])';
+durations = diff(intervals,1,2); % I may not use this at the end
+%for now takes care only of very shor intervals
+for sd = 1:size(durations,1)
+    temp_int = intervals(sd,:);
+    d_length(sd) = diff(temp_int);
+    pos_level(sd) = mean(res.X(temp_int(1):temp_int(2),1));
+    if d_length(sd) <= 3
+        res.LEDgrayscale(temp_int(1):temp_int(2)+1) = 0;
+    end
+end
+
+
+    
+
 
 CurrDir = pwd;
 cd(videopath)

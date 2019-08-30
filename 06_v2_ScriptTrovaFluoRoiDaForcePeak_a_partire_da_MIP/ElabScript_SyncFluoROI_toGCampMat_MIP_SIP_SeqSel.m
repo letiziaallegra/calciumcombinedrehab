@@ -14,7 +14,14 @@ UsbPortHD = 'M';
 UserName  = getenv('username');
 %%%%%%%%%%% Animal Dir %%%%%%%%%%%%%%%%%
 %AnimalDir = [UsbPortHD,':\LENS\Animals Data STIM'];
-AnimalDir = ['C:\LENS\Data Leti'];
+AnimalDir = ['/Volumes/ALE6TB_DESK/DATA/Imaging/Emilia/Rehab/MATLAB_DATA_FOLDERS/'];
+AnimalDir = '/Users/alessandro/Desktop/toxin/MATLAB/';
+AnimalDir = '/Users/alessandro/Desktop/180424_RehabOptogen/MATLAB/';
+AnimalDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB/';
+AnimalDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB_GCaMP27-29/';
+AnimalDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB_OR/';
+AnimalDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB_CTRL_190122/';
+AnimalDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB_CTRL_190117/';
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%% Animal_Name %%%%%%%%%%%%%%%%%%%
@@ -28,14 +35,35 @@ AnimalDir = ['C:\LENS\Data Leti'];
 %                         'GCaMPChR2_14_stroke_BoNT', 'GCaMPChR2_15_stroke_BoNT','GCaMPChR2_16_stroke_BoNT'};
 
 ListAnimalTogether = {  'GCampChR2_TOX1' , 'GCampChR2_TOX2', 'GCampChR2_TOX3', 'GCampChR2_TOX4', 'GCampChR2_TOX5'};
+ListAnimalTogether = {  'GCamp_26_sani' };
+ListAnimalTogether = {  'Tox1_toxin','Tox2_toxin','Tox3_toxin','Tox4_toxin','Tox5_toxin' };
+ListAnimalTogether = {  'or19_robot','or20_robot','or21_robot','or23_optostim','or24_optostim',...
+    'or25_optostim','or26_optostim+robot','or27_robot','or28_optostim+robot', 'or29_sham', 'or30_sham'};
+ListAnimalTogether = { 'GCaMP-ChR2-22_stroke', 'GCaMP20_Ctrl', 'GCaMP21_Ctrl' , 'GCaMP22_Ctrl', ...
+    'GCaMP22_robot', 'GCaMP23_Ctrl', 'GCaMP23_robot', 'GCaMP24_robot', 'GCaMP25_robot', 'GCaMP26_robot', ...
+    'GCaMP27_Ctrl', 'GCaMP28_Ctrl', 'GCaMP29_Ctrl'};
+ListAnimalTogether = {'GCaMP20_Ctrl', 'GCaMP21_Ctrl' , 'GCaMP22_Ctrl', ...
+    'GCaMP22_robot', 'GCaMP23_Ctrl', 'GCaMP23_robot', 'GCaMP24_robot', 'GCaMP25_robot', 'GCaMP26_robot', ...
+    'GCaMP27_Ctrl', 'GCaMP28_Ctrl', 'GCaMP29_Ctrl'};
+ListAnimalTogether = { 'GCaMP27_wk02_Ctrl', 'GCaMP27_wk03_Ctrl','GCaMP27_wk04_Ctrl','GCaMP28_wk02_Ctrl'...
+,'GCaMP28_wk03_Ctrl','GCaMP28_wk04_Ctrl','GCaMP29_wk02_Ctrl','GCaMP29_wk03_Ctrl','GCaMP29_wk04_Ctrl'};
+ListAnimalTogether = {'OR9_wk01_sham', 'OR10_wk01_sham', 'OR13_wk01_optostim','OR14_wk01_optostim'...
+'OR15_wk01_optostim+robot','OR16_wk01_optostim+robot','OR17_wk01_optostim+robot'};
+ListAnimalTogether = {'GCaMP24_wk01_ctrl','GCaMP25_wk01_ctrl','GCaMP26_wk01_ctrl'};
+ListAnimalTogether = {'GCaMP-ChR2-1_wk01_ctrl'};
 
+wba = waitbar(0,'Processing');
 
 for LATo = 1:length(ListAnimalTogether)
     
-    clearvars -except CurrDir UsbPortHD UserName AnimalDir ListAnimalTogether LATo
+    
+    
+    clearvars -except wba CurrDir UsbPortHD UserName AnimalDir ListAnimalTogether LATo
     
     Animal_Name_choice                    = [ListAnimalTogether{LATo}];
-    
+    wba = waitbar(0,wba,['Whole Process. Subject: ',Animal_Name_choice]);
+    myString = findall(wba,'String',['Subject: ',Animal_Name_choice]);
+    set(myString,'Interpreter','none');
     %%%%%%%% TrialDay %%%%%%%%%%%%%%%%%%%%%%%
     % TrialDay_choice = '01';
     TrialDay_choice = [];
@@ -43,12 +71,18 @@ for LATo = 1:length(ListAnimalTogether)
     
     %%%%% LOAD data MIP and SIP %%%%%%%%%%%%
     %ROI_MIP_Folder   = ['C:\Users\',UserName,'\Google Drive_SL\Piattaforma Stefano\ELABORAZIONE DATA\05_Maximum_Intensity_Projection_SeqSelez\_Store_MIP_SIP_RegionBound\',Animal_Name_choice];
-    ROI_MIP_Folder   = ['C:\Users\asus\Google Drive\Piattaforma Stefano\ELABORAZIONE DATA\05_Maximum_Intensity_Projection_SeqSelez\_Store_MIP_SIP_RegionBound\',Animal_Name_choice];
-    
-    if ~isempty(strfind(Animal_Name_choice,'BoNT')) | strfind(Animal_Name_choice,'Rehab')
+    ROI_MIP_Folder   = ['/Users/alessandro/Desktop/ELABORAZIONE DATA/05_Maximum_Intensity_Projection_SeqSelez/_Store_MIP_SIP_RegionBound/',Animal_Name_choice];
+    AnimalWhereSaveGCamp = ['/Users/alessandro/Desktop/ELABORAZIONE DATA/_data_MAT_GCamp_Store'];
+    if ~isempty(strfind(Animal_Name_choice,'BoNT')) | strfind(Animal_Name_choice,'roboti')
         %load 4 files -> one a week
+        % list of weeks !!!! IT IS IMPORTANT THAT THE WEEKDAY NUMBER IS
+        % MATCHES THE REAL NUMBER, I.E. DAY #6 => FIRST DAY OF SECOND WEEK
+        % Str_Week = {'Week_1_'; 'Week_2_'; 'Week_3_'; 'Week_4_'};
+        % FOR ONE WEEK IT DOES NOT MATTER
         WeekList = {'Week_1_'; 'Week_2_'; 'Week_3_'; 'Week_4_'};
         weekSpace = [1 2 3 4 5; 6 7 8 9 10; 11 12 13 14 15; 16 17 18 19 20];
+        WeekList = {'Week_1_'; 'Week_2_'; 'Week_3_'};
+        weekSpace = [1 2 3 4 5; 6 7 8 9 10; 11 12 13 14 15];
     elseif strfind(Animal_Name_choice,'stroke_STIM_1w')
         WeekList = {''};
         weekSpace = [1:3];
@@ -67,10 +101,10 @@ for LATo = 1:length(ListAnimalTogether)
         
         ROI_MIP_Filename = [Animal_Name_choice,'_MIP_SIP_',WeekList{i_wkl},'RegionBound_Index'];
         %load RegionBound_Index
-        load( [ROI_MIP_Folder,'\',ROI_MIP_Filename] );
+        load( [ROI_MIP_Folder,filesep,ROI_MIP_Filename] );
         %store RegionBound_Index for every week
         RegionBound_Store{i_wkl,1} =  RegionBound_Index;
-    end   
+    end
     %
     %ROIs (the same)
     ROI_name = RegionBound_Index(:,2)';
@@ -83,11 +117,12 @@ for LATo = 1:length(ListAnimalTogether)
     %%%%% rot_transl %%%%%%%%%%%%%%%%%%%%%%%
     %RotTranslFolder   = ['C:\Users\',UserName,'\Google Drive_SL\Piattaforma Stefano\ELABORAZIONE DATA\Script_Flip_Find_References\MAT_Rot_Trans'];
     RotTranslFolder   = ['C:\Users\asus\Google Drive\Piattaforma Stefano\ELABORAZIONE DATA\Script_Flip_Find_References\MAT_Rot_Trans'];
+    RotTranslFolder = ['/Users/alessandro/Desktop/ELABORAZIONE DATA/Script_Flip_Find_References/MAT_Rot_Trans'];
     RotTranslFilename = [Animal_Name_choice,'_Rot_Trans_Par'];
     %load rot_transl
-    load( [RotTranslFolder,'\',RotTranslFilename] );
+    load( [RotTranslFolder,filesep,RotTranslFilename] );
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-   
+    
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%% choice of the animals to elaborate     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -99,18 +134,19 @@ for LATo = 1:length(ListAnimalTogether)
         
         if length(AnimalName_buf)>5
             
-            if strcmp(AnimalName_buf(1:5),'GCaMP') & isdir([AnimalDir,'\',AnimalName_buf])
+            if strcmp(AnimalName_buf(1:2),'OR') & isdir([AnimalDir,filesep,AnimalName_buf])
                 %all of the animals in folder
                 AnimalName_IndexList(indexAn,1) = lfcd;
                 indexAn = indexAn+1;
                 
             end
             
-            if strcmp(AnimalName_buf,Animal_Name_choice) & isdir([AnimalDir,'\',AnimalName_buf])
+            if strcmp(AnimalName_buf,Animal_Name_choice) & isdir([AnimalDir,filesep,AnimalName_buf])
                 %one animal
                 AnimalName_IndexList_One = lfcd;
                 break
             end
+            
         end
     end
     if ~isempty(Animal_Name_choice)
@@ -123,26 +159,26 @@ for LATo = 1:length(ListAnimalTogether)
     for anAn_i=1:length(AnimalName_IndexList)  %for animals
         
         Animal_Index = AnimalName_IndexList(anAn_i);
-        Animal_Name  = ListFolderAnimalDir(Animal_Index,1).name;        
+        Animal_Name  = ListFolderAnimalDir(Animal_Index,1).name;
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%%%% choice of the days to elaborate        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        AnimalCurrDir = dir([AnimalDir,'\',Animal_Name]);
+        AnimalCurrDir = dir([AnimalDir,filesep,Animal_Name]);
         indexDay = 1;
         
         for acd=3:length(AnimalCurrDir)
             AnimalDay_buf = AnimalCurrDir(acd,1).name;
             
-            if isdir([AnimalDir,'\',Animal_Name,'\',AnimalDay_buf])
+            if isdir([AnimalDir,filesep,Animal_Name,filesep,AnimalDay_buf])
                 %all of the days of the animals in folder
                 Days_IndexList(indexDay,1) = acd;
-                indexDay = indexDay+1;                
+                indexDay = indexDay+1;
                 
                 if strcmp(AnimalDay_buf(1:2),TrialDay_choice)
                     %one animal
                     Days_IndexList_One = acd;
-
+                    
                     break
                 end
             end
@@ -160,7 +196,7 @@ for LATo = 1:length(ListAnimalTogether)
             TrialDay_Index = Days_IndexList(anD_i);
             TrialDay       = AnimalCurrDir(TrialDay_Index,1).name;
             
-            CurrAnDayFolder = [AnimalDir,'\',Animal_Name,'\',TrialDay];
+            CurrAnDayFolder = [AnimalDir,filesep,Animal_Name,filesep,TrialDay];
             CurrAnDayFolder_List = dir(CurrAnDayFolder);
             
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -168,13 +204,16 @@ for LATo = 1:length(ListAnimalTogether)
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             for cadf=3:length(CurrAnDayFolder_List)
                 
-                if strcmp(CurrAnDayFolder_List(cadf,1).name(1:3),'MAT')
-                    %data images folder
-                    folderTASK_FLUO = [CurrAnDayFolder,'\',CurrAnDayFolder_List(cadf,1).name];
-                elseif length(CurrAnDayFolder_List(cadf,1).name)>7
-                    if strcmp(CurrAnDayFolder_List(cadf,1).name(end-7:end-4),'_Par')
-                        %dataGCmap filename
-                        folderTASK_dataGCampFilename = [CurrAnDayFolder,'\',CurrAnDayFolder_List(cadf,1).name];
+                %additional check on name length
+                if length((CurrAnDayFolder_List(cadf,1).name)) >2
+                    if strcmp(CurrAnDayFolder_List(cadf,1).name(1:3),'MAT')
+                        %data images folder
+                        folderTASK_FLUO = [CurrAnDayFolder,filesep,CurrAnDayFolder_List(cadf,1).name];
+                    elseif length(CurrAnDayFolder_List(cadf,1).name)>7
+                        if strcmp(CurrAnDayFolder_List(cadf,1).name(end-7:end-4),'_Par')
+                            %dataGCmap filename
+                            folderTASK_dataGCampFilename = [CurrAnDayFolder,filesep,CurrAnDayFolder_List(cadf,1).name];
+                        end
                     end
                 end
                 
@@ -237,8 +276,13 @@ for LATo = 1:length(ListAnimalTogether)
             downsamplingfactor=1;
             
             index=0;
-            wb = waitbar(0,'Images Loading, Please wait...');
-            
+            wb_string = [Animal_Name_choice,' | ', num2str(TrialDay), '- Images Loading, Please wait...'];
+            wb = waitbar(0, wb_string);
+            myString = findall(wb, 'String', wb_string);
+            set(myString,'Interpreter','none');
+            wbpos = get(wba, 'Position');
+            wbpos(2) = wbpos(2) + wbpos(4);
+            set(wba, 'Position', wbpos)
             %%load image stack
             %% N.B. size of StoreImage depends on num of ROIs
             LenFLUO_Im = RealStart_Fluo+RealDurTask_Fluo-1;
@@ -249,12 +293,12 @@ for LATo = 1:length(ListAnimalTogether)
                 
                 index = index+1;
                 indexImage = i+2;
-                %waitbar(indexImage/(LenFLUO_Im),wb)
+                
                 
                 nameImage = d(indexImage,1).name;
                 
                 %load .mat
-                load([folderTASK_FLUO,'\',nameImage]);
+                load([folderTASK_FLUO,filesep,nameImage]);
                 Im = Im8_fv;
                 Im_Original = Im;
                 
@@ -287,10 +331,13 @@ for LATo = 1:length(ListAnimalTogether)
                     
                     %translation along rows
                     if trans_lr<0
-                        Im_OR(1:rw-trans_Y+1,:) = Im_R(trans_Y:end,:);
+                        if round(trans_Y) == 0
+                            trans_Y = 1;
+                        end
+                        Im_OR(1:round(rw-trans_Y+1),:) = Im_R(round(trans_Y):end,:);
                         trans_lr = -1;
                     elseif trans_lr>0
-                        Im_OR(trans_Y:end,:) = Im_R(1:rw-trans_Y+1,:);
+                        Im_OR(round(trans_Y):end,:) = Im_R(1:round(rw-trans_Y+1),:);
                         trans_lr = +1;
                     end
                     
@@ -303,7 +350,7 @@ for LATo = 1:length(ListAnimalTogether)
                         
                         %find the right week
                         [week_ok_index week_ok_index_r] =  find(weekSpace == str2num(TrialDay(1:2)));
-                                               
+                        
                         %Region Bounds
                         RegionBound_Index = RegionBound_Store{week_ok_index,1};
                         
@@ -323,12 +370,12 @@ for LATo = 1:length(ListAnimalTogether)
                             nameImage_f0 = d(indexImage_f0,1).name;
                             
                             %load image
-                            load([folderTASK_FLUO,'\',nameImage_f0]);
+                            load([folderTASK_FLUO,filesep,nameImage_f0]);
                             Im_f0 = Im8_fv;
                             Im_Original_f0 = Im_f0;
                             
                             %filtering
-                            Im_Original_f0 = medfilt2(Im_Original_f0);                            
+                            Im_Original_f0 = medfilt2(Im_Original_f0);
                             
                             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                             %%%%%%%%% ROTATION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -352,7 +399,11 @@ for LATo = 1:length(ListAnimalTogether)
                             trans_X   = rot_transl(i_day_actual,5);
                             
                             %translation along rows
+                            trans_Y = round(trans_Y);
                             if trans_lr<0
+                                if round(trans_Y) == 0
+                                    trans_Y = 1;
+                                end
                                 Im_OR_f0(1:rw-trans_Y+1,:) = Im_R_f0(trans_Y:end,:);
                                 trans_lr = -1;
                             elseif trans_lr>0
@@ -382,7 +433,7 @@ for LATo = 1:length(ListAnimalTogether)
                         H_Im_Round_Fig = figure('Name',['ROI_around_',ROI_name{nR}]);
                         imshow(MeanMatrix_f0, []);
                         H_Im_Round_Fig_filename = ['Fig_ROI_around_',ROI_name{nR},'_',Animal_name,'_',TrialDay];
-                        saveas(H_Im_Round_Fig ,[CurrAnDayFolder,'\',H_Im_Round_Fig_filename],'fig');
+                        saveas(H_Im_Round_Fig ,[CurrAnDayFolder,filesep,H_Im_Round_Fig_filename],'fig');
                         close(H_Im_Round_Fig)
                         
                         %storage delle f0 delle ROI
@@ -394,7 +445,7 @@ for LATo = 1:length(ListAnimalTogether)
                         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                     end
                     
-                    
+                    waitbar(indexImage/(LenFLUO_Im),wb)
                     % Use the mask to select part of the image
                     Im_ROI = double(Im_OR_RotTrasl) .* MatrixImage_MASK(:,:,nR);
                     %Metto tutti gli 0 pari a NaN
@@ -422,7 +473,7 @@ for LATo = 1:length(ListAnimalTogether)
                 imFluoResMean     = [imFluoResMean imFluoResMean_Buf];
             end
             
-      
+            
             
             
             %%%%%%%%%%%%%%%
@@ -454,26 +505,31 @@ for LATo = 1:length(ListAnimalTogether)
             plot(dataGCamp.t,dataGCamp.ROI_MIP_SIP.ROI_Signal(:,3)/10,'c');
             legend({'Status','Force','Pos/10','Speed/100','MIP/10','rostral SIP/10','caudal SIP/10'})
             H_MCA_fig_filename = ['Fig_Sig_MIP_SIP_',Animal_name,'_',TrialDay];
-            saveas(H_MCA_fig,[CurrAnDayFolder,'\',H_MCA_fig_filename],'fig');
+            saveas(H_MCA_fig,[CurrAnDayFolder,filesep,H_MCA_fig_filename],'fig');
             close(H_MCA_fig)
             %%%%
             
             %%%%%%
             filename_GCamp = ['dataMouseGCamp_',dataGCamp.Info.Name,'_',dataGCamp.Info.Date,'_Par','_MIPSIP' ];
-            save([CurrAnDayFolder,'\',filename_GCamp],'dataGCamp')
+            save([CurrAnDayFolder,filesep,filename_GCamp],'dataGCamp')
+            dst_folder = [AnimalWhereSaveGCamp,filesep,Animal_Name];
+            if ~isdir(dst_folder)
+                mkdir(dst_folder)
+            end
+            save([dst_folder,filesep,filename_GCamp],'dataGCamp')
             %%%%%%
             
             display(['END PROCESS for: ',filename_GCamp]);
             clear dataGCamp MatrixImage_f0 MatrixImage_f0_ROI MeanMatrix_f0 Im Cx Cy circle_image circlemask circle_image_f0 d imFluoResMean imFluoResMean_Buf t xgrid ygrid Im_Original Im_Original_f0 Im_f0 ROI_MIP RegionBound_Index
             
-            
+        close(wb)
         end %end for scroll days
         
-        
+    waitbar(LATo/ length(ListAnimalTogether), wba, '')    
     end %end for animals
     
 end %end LATo
-
+close(wba)
 
 
 

@@ -5,14 +5,32 @@
 clear
 close all
 clc
-
+% set(0,'DefaultFigureWindowStyle','docked')
 %% Choice of the animal and trial day
 %UsbPort = 'M';
 %AnimalDir = [UsbPort,':\LENS\Animals Data STIM'];
-AnimalDir = '/Users/alessandro/DATA/Imaging/matlab_sample_data';
+% AnimalDir = '/Volumes/ALE6TB_DESK/DATA/Imaging/Emilia/Rehab/MATLAB_DATA_FOLDERS/';
+AnimalDir = '/Volumes/ALE6TB_DESK/DATA/Imaging/Emilia/toxin/MATLAB/';
+AnimalDir = '/Users/alessandro/Desktop/toxin/MATLAB';
+AnimalDir = '/Users/alessandro/Desktop/180424_RehabOptogen/MATLAB/';
+AnimalDir = ['/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/Emilia/Rehab/MATLAB_DATA_FOLDERS/'];
+AnimalDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB/';
+AnimalDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB_GCaMP27-29';
+AnimalDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB_OR';
+AnimalDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB_CTRL_190122';
+AnimalDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB_CTRL_190117';
+
 % AnimalDir = ['C:\Users\CNR-SSSUP\Desktop\DATI LENS\Animals_Data_Make_Mat_Seq_to_do'];
 
 %%%%%%%% Animal_Name
+% Animal_Name_choice = 'OR9_wk01_sham';
+% Animal_Name_choice = 'OR10_wk01_sham';
+% Animal_Name_choice = 'OR13_wk01_optostim';
+% Animal_Name_choice = 'OR14_wk01_optostim';
+% Animal_Name_choice = 'OR15_wk01_optostim+robot';
+% Animal_Name_choice = 'OR16_wk01_optostim+robot';
+% Animal_Name_choice = 'OR17_wk01_optostim+robot';
+
 % Animal_Name_choice = 'GCaMPChR2_7_control';
 % Animal_Name_choice = 'GCaMPChR2_8_stroke';
 % Animal_Name_choice = 'GCaMPChR2_3_stroke_BoNT';
@@ -23,11 +41,53 @@ AnimalDir = '/Users/alessandro/DATA/Imaging/matlab_sample_data';
 % Animal_Name_choice = 'GCaMPChR2_24_control';
 % Animal_Name_choice = 'GCaMPChR2_26_stroke_LateRehab'; 
 
-Animal_Name_choice = 'GCampChR2_TOX1';
-Animal_Name_choice = 'GCaMP24';
+% Animal_Name_choice = 'GCampChR2_TOX1';
+% Animal_Name_choice = 'GCamp_24_sani';
+% Animal_Name_choice = 'GCamp_25_sani';
+% Animal_Name_choice = 'GCamp_26_sani';
+% Animal_Name_choice = 'GCamp_22_onlyrob';
+% Animal_Name_choice = 'GCamp_23_onlyrob';
+% Animal_Name_choice = 'GCamp_24_onlyrob';
+% Animal_Name_choice = 'GCamp_25_onlyrob';
+% Animal_Name_choice = 'GCamp_26_onlyrob';
+% Animal_Name_choice = 'Tox3_toxin';
+% Animal_Name_choice = 'or19_robot';
+% Animal_Name_choice = 'or25_optostim';
+% Animal_Name_choice = 'or26_optostim+robot';
+% Animal_Name_choice = 'or30_sham';
+% Animal_Name_choice = 'GCamp_22_onlyrob';
+
+% Animal_Name_choice = 'GCaMP-ChR2-22_stroke';
+% Animal_Name_choice = 'GCaMP20_Ctrl';
+% Animal_Name_choice = 'GCaMP21_Ctrl';
+% Animal_Name_choice = 'GCaMP22_Ctrl';
+% Animal_Name_choice = 'GCaMP22_robot';
+% Animal_Name_choice = 'GCaMP23_Ctrl';
+% Animal_Name_choice = 'GCaMP23_robot';
+% Animal_Name_choice = 'GCaMP24_robot';
+% Animal_Name_choice = 'GCaMP25_robot';
+% Animal_Name_choice = 'GCaMP26_robot';
+% Animal_Name_choice = 'GCaMP27_Ctrl';
+% Animal_Name_choice = 'GCaMP28_Ctrl';
+% Animal_Name_choice = 'GCaMP29_Ctrl';
+% Animal_Name_choice = 'GCaMP27_wk02_Ctrl';
+% Animal_Name_choice = 'GCaMP27_wk03_Ctrl';
+% Animal_Name_choice = 'GCaMP27_wk04_Ctrl';
+% Animal_Name_choice = 'GCaMP28_wk02_Ctrl';
+% Animal_Name_choice = 'GCaMP28_wk03_Ctrl';
+% Animal_Name_choice = 'GCaMP28_wk04_Ctrl';
+% Animal_Name_choice = 'GCaMP29_wk02_Ctrl';
+% Animal_Name_choice = 'GCaMP29_wk03_Ctrl';
+% Animal_Name_choice = 'GCaMP29_wk04_Ctrl';
+% Animal_Name_choice = 'GCaMP24_wk01_ctrl';
+% Animal_Name_choice = 'GCaMP25_wk01_ctrl';
+% Animal_Name_choice = 'GCaMP26_wk01_ctrl';
+Animal_Name_choice = 'GCaMP-ChR2-1_wk01_ctrl';
+
 %%%%%%%% TrialDay
 % TrialDay_choice = '01';
-TrialDay_choice = [];
+% TrialDay_choice = ['03']; %leave empty for all days
+TrialDay_choice = []
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
 %%%%% choice of the animals to elaborate     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -39,7 +99,7 @@ for lfcd=3:length(ListFolderAnimalDir)
     
     if length(AnimalName_buf)>5
         
-        if strcmp(AnimalName_buf(1:5),'GCaMP') & isdir([AnimalDir,filesep,AnimalName_buf])
+        if strcmp(AnimalName_buf(1:2),'GC') & isdir([AnimalDir,filesep,AnimalName_buf])
             %all of the animals in folder
             AnimalName_IndexList(indexAn,1) = lfcd;
             indexAn = indexAn+1;
@@ -99,7 +159,7 @@ for anAn_i=1:length(AnimalName_IndexList)  %for Animale -> end
     for anD_i=1:length(Days_IndexList)
         
         TrialDay_Index = Days_IndexList(anD_i);
-        TrialDay       = AnimalCurrDir(TrialDay_Index,1).name;
+        TrialDay       = AnimalCurrDir(TrialDay_Index,1).name
         
         CurrAnDayFolder = [AnimalDir,filesep,Animal_Name,filesep,TrialDay];
         CurrAnDayFolder_List = dir(CurrAnDayFolder);
@@ -263,7 +323,7 @@ for anAn_i=1:length(AnimalName_IndexList)  %for Animale -> end
         
         
         %%%% plot time course  %%%
-        fbas = figure('Name','Select where animal is not moving');
+        fbas = figure('Name','Select where animal is not moving','WindowStyle','docked');
         plot(t_robot,status_robot/10,'r')
         hold on
         plot(t_robot,fx_robot,'b')
@@ -416,6 +476,7 @@ for anAn_i=1:length(AnimalName_IndexList)  %for Animale -> end
         legend([{'Status','Position','Force'},ROI_name])
         Day_Fig_filename = 'Fig_whole_sig';
         saveas(figPl,[CurrAnDayFolder,filesep,Day_Fig_filename],'fig');
+        saveas(figPl,[CurrAnDayFolder,filesep,Day_Fig_filename],'jpeg');
         pause(1.5)
         close(figPl)
         

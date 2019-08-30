@@ -12,11 +12,32 @@ clear all
 close all
 clc
 
-
+% A00_MoveSequences('/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB')
+% A00_MoveSequences('/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB_GCaMP27-29')
+% A00_MoveSequences('/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB_OR')
+% A00_MoveSequences('/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB_CTRL_190122')
+% A00_MoveSequences('/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB_CTRL_190117')
 %%%%%%%%%%%
 CurrDir = cd;
 ListAnimalTogether = { 'GCampChR2_TOX1','GCampChR2_TOX2','GCampChR2_TOX3','GCampChR2_TOX4','GCampChR2_TOX5'};
-ListAnimalTogether = {  'GCaMP24'}; 
+ListAnimalTogether = {  'GCamp_26_sani'}; 
+ListAnimalTogether = {  'Tox1_toxin','Tox2_toxin','Tox3_toxin','Tox4_toxin','Tox5_toxin' }; 
+ListAnimalTogether = {  'or19_robot','or20_robot','or21_robot','or23_optostim','or24_optostim',...
+    'or25_optostim','or26_optostim+robot','or27_robot','or28_optostim+robot', 'or29_sham', 'or30_sham'};
+ListAnimalTogether = {  'or27_robot' };
+ListAnimalTogether = { 'GCaMP-ChR2-22_stroke', 'GCaMP20_Ctrl', 'GCaMP21_Ctrl' , 'GCaMP22_Ctrl', ...
+    'GCaMP22_robot', 'GCaMP23_Ctrl', 'GCaMP23_robot', 'GCaMP24_robot', 'GCaMP25_robot', 'GCaMP26_robot', ...
+    'GCaMP27_Ctrl', 'GCaMP28_Ctrl', 'GCaMP29_Ctrl'};
+ListAnimalTogether = { 'GCaMP22_robot', 'GCaMP23_Ctrl', 'GCaMP23_robot', 'GCaMP24_robot', 'GCaMP25_robot', 'GCaMP26_robot', ...
+    'GCaMP27_Ctrl', 'GCaMP28_Ctrl', 'GCaMP29_Ctrl'};
+ListAnimalTogether = { 'GCaMP22_robot', 'GCaMP23_robot', 'GCaMP24_robot', 'GCaMP25_robot', 'GCaMP26_robot'};
+ListAnimalTogether = { 'GCaMP27_wk02_Ctrl', 'GCaMP27_wk03_Ctrl','GCaMP27_wk04_Ctrl','GCaMP28_wk02_Ctrl'...
+,'GCaMP28_wk03_Ctrl','GCaMP28_wk04_Ctrl','GCaMP29_wk02_Ctrl','GCaMP29_wk03_Ctrl','GCaMP29_wk04_Ctrl'};
+ListAnimalTogether = {'OR9_wk01_sham', 'OR10_wk01_sham', 'OR13_wk01_optostim','OR14_wk01_optostim'...
+'OR15_wk01_optostim+robot','OR16_wk01_optostim+robot','OR17_wk01_optostim+robot'};
+ListAnimalTogether = {'GCaMP24_wk01_ctrl','GCaMP25_wk01_ctrl','GCaMP26_wk01_ctrl'};
+ListAnimalTogether = {'GCaMP-ChR2-1_wk01_ctrl'};
+
 % ListAnimalTogether = {      'GCaMPChR2_7_control','GCaMPChR2_17_control','GCaMPChR2_23_control','GCaMPChR2_24_control',...
 %                             'GCaMPChR2_8_stroke', 'GCaMPChR2_9_stroke', 'GCaMPChR2_19_stroke', 'GCaMPChR2_22_stroke','GCaMPChR2_25_stroke', 'GCaMPChR2_26_stroke'...
 %                             'GCaMP16_stroke_BoNT','GCaMP18_stroke_BoNT',...
@@ -27,8 +48,8 @@ ListAnimalTogether = {  'GCaMP24'};
 %where placing BREGMA (y)
 Bregma_y = 0.25; % (mm)
 %size of the cranial window (mm)
-%Size_CW = 4.4; %(mm)
-Size_CW = 5.25; %(mm)
+Size_CW = 4.4; %(mm)
+% Size_CW = 5.25; %(mm)
 
                         
 for lat=1:length(ListAnimalTogether)
@@ -48,15 +69,23 @@ for lat=1:length(ListAnimalTogether)
     
     %MainDir = [UsbPort,':\LENS\Animals Data STIM\',Animal_name,filesep];
     MainDir = ['C:\LENS\Data Leti\',Animal_name,filesep];
-    AnimalDir = ['/Users/alessandro/DATA/Imaging/matlab_sample_data'];
+    AnimalDir = ['/Volumes/ALE6TB_DESK/DATA/Imaging/Emilia/Rehab/MATLAB_DATA_FOLDERS/'];
+    AnimalDir = '/Volumes/ALE6TB_DESK/DATA/Imaging/Emilia/toxin/MATLAB/';
+    AnimalDir = '/Users/alessandro/Desktop/toxin/MATLAB/';
+    AnimalDir = '/Users/alessandro/Desktop/180424_RehabOptogen/MATLAB/';
+    AnimalDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB/';
+    AnimalDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB_GCaMP27-29';
     % AnimalDir     = [UsbPort,':\LENS\Animals Data\NoBregmaREF'];
+    AnimalDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB_OR';
+    AnimalDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB_CTRL_190122';
+    AnimalDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB_CTRL_190117';
     MainDir       = [AnimalDir,filesep,Animal_name];
     NumDaysFolder = dir(MainDir);
     
     
     %%%%%%%% load Reference File %%%%%%%%%%%%%%%%%%%%%%%%
     RefDir      = ['C:\Users\asus\Google Drive\Piattaforma Stefano\ELABORAZIONE DATA\Script_Flip_Find_References\MAT_Rot_Trans'];
-    RefDir = ['/Users/alessandro/Dropbox/Code/Matlab/rehab_mat_algs/03b_Script_Flip_Find_References/MAT_Rot_Trans'];
+    RefDir = ['/Users/alessandro/Desktop/ELABORAZIONE DATA/Script_Flip_Find_References/MAT_Rot_Trans'];
     
     FileRefName = [Animal_name,'_Rot_Trans_Par.mat'];
     if exist([RefDir,filesep,FileRefName])
@@ -348,7 +377,7 @@ for lat=1:length(ListAnimalTogether)
         saveas(MIP_All_Day_Fig,[MainDir,filesep,MIP_All_Day_Fig_filename_week],'tif');
         
         %save Im_med mat
-        save([MainDir,'\Im_AlongDays_',Animal_name,'_Long_SelSeq_',MIP_tech],'Im_med')
+        save([MainDir,filesep,'Im_AlongDays_',Animal_name,'_Long_SelSeq_',MIP_tech],'Im_med')
         
         
         %rehab group
@@ -368,9 +397,11 @@ for lat=1:length(ListAnimalTogether)
                     if ~isempty(i_wk)
                         Im_buf(:,:,wee_j) = MIP_Th_Dil_filt_All_Day(:,:,i_wk);
                     end
-                    
                 end
                 
+                if ~exist('Im_buf','var')
+                    continue
+                end
                 Im_med = sum(Im_buf,3);
                 
                 %save Im_med mat for each week
@@ -383,7 +414,7 @@ for lat=1:length(ListAnimalTogether)
                 saveas(MIP_All_Day_Fig,[MainDir,filesep,MIP_All_Day_Fig_filename_week],'fig');
                 saveas(MIP_All_Day_Fig,[MainDir,filesep,MIP_All_Day_Fig_filename_week],'tif');
                 
-                save([MainDir,'\Im_AlongDays_Week_',num2str(wee_i),'_',Animal_name,'_Long_SelSeq_',MIP_tech],'Im_med')
+                save([MainDir,filesep,'Im_AlongDays_Week_',num2str(wee_i),'_',Animal_name,'_Long_SelSeq_',MIP_tech],'Im_med')
                 
                 clear Im_buf Im_med
                 

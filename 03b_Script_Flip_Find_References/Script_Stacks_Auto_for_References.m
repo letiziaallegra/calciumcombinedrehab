@@ -9,7 +9,7 @@ clc
 
 User = getenv('username');
 MainDir = ['C:\Users\asus\Desktop\to do'];
-MainDir = '/Users/alessandro/Dropbox/Code/Matlab/rehab_mat_algs/03b_Script_Flip_Find_References/Storage_Folder/to do';
+MainDir = '/Users/alessandro/Desktop/ELABORAZIONE DATA/Script_Flip_Find_References/Storage_Folder/to do';
 % MainDir       = [UsbPort,':\LENS\Script_Flip_Find_References'];
 %cartella dove mettere i dati 
 %WorkingDir    = [MainDir,'\Working_Folder'];
@@ -19,8 +19,10 @@ MainDirFolder = dir(WorkingDir);
 %where placing BREGMA (y)
 Bregma_y = 0.25; % (mm)
 %size of the cranial window (mm)
-%Size_CW = 4.4; %(mm)
-Size_CW = 5.25; %(mm)
+Size_CW = 4.4; %(mm)
+% Size_CW = 5.25; %(mm)
+
+FLIP = true;
 
 for mdf=3:length(MainDirFolder) %for MainDirFolder
     
@@ -35,7 +37,7 @@ for mdf=3:length(MainDirFolder) %for MainDirFolder
         indexDay = indexDay+1;
         DayImage     = AnimalDirDayFolder(adf,1).name;
         DayDirFolder = dir([WorkingDir,filesep,AnimalDir,filesep,DayImage]);    
-        
+        indexDay = str2num(DayImage(1:2));
         Im16 = imread([WorkingDir,filesep,AnimalDir,filesep,DayImage]);
         
         %16 bits -> 8 bits
@@ -44,7 +46,11 @@ for mdf=3:length(MainDirFolder) %for MainDirFolder
         Im8 = uint8(Im16 * (M8/M16));
         
         %flip vertically
-        Im8_fv = flipdim(Im8 ,1);
+        if FLIP
+            Im8_fv = flipdim(Im8 ,1);
+        else
+            Im8_fv = Im8;
+        end
         Im = Im8_fv;    
         
         rw = size(Im,1);
@@ -52,7 +58,7 @@ for mdf=3:length(MainDirFolder) %for MainDirFolder
         
         
         %set origin (based on black dot)
-        H_MIP_Fig = figure('Name',['Original Image',DayImage]);
+        H_MIP_Fig = figure('Name',['Animal:',AnimalDir,'Original Image',DayImage]);
         subplot(221)
         imagesc(Im)
         colormap gray
@@ -160,7 +166,8 @@ for mdf=3:length(MainDirFolder) %for MainDirFolder
     end
     
         rot_transl = [degree_all trans_all];
-        Animal_name = AnimalDir(1:end-4)
+        % Animal_name = AnimalDir(1:end-4)
+        Animal_name = AnimalDir
         save([MainDir,filesep,Animal_name,'_Rot_Trans_Par'],'rot_transl')
 
 end

@@ -1,6 +1,6 @@
 %Script To compute Parameters from Force Peaks
 %ComputeForceParScript
-
+%TAKE A LOOK AT LINE 102 Ale
 clear
 close all
 clc
@@ -9,7 +9,16 @@ clc
 %%%%  Folder
 UsbPort = 'M';
 AnimalMainDir = ['C:\LENS\Data Leti'];
-AnimalMainDir = ['/Users/alessandro/DATA/Imaging/matlab_sample_data'];
+AnimalMainDir = ['/Volumes/ALE6TB_DESK/DATA/Imaging/Emilia/Rehab/MATLAB_DATA_FOLDERS/'];
+AnimalMainDir = '/Volumes/ALE6TB_DESK/DATA/Imaging/Emilia/toxin/MATLAB/';
+AnimalMainDir = '/Users/alessandro/Desktop/toxin/MATLAB';
+AnimalMainDir = '/Users/alessandro/Desktop/180424_RehabOptogen/MATLAB/';
+AnimalMainDir = ['/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/Emilia/Rehab/MATLAB_DATA_FOLDERS/'];
+AnimalMainDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB/';
+AnimalMainDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB_GCaMP27-29';
+AnimalMainDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB_OR';
+AnimalMainDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB_CTRL_190122';
+AnimalMainDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB_CTRL_190117';
 % AnimalMainDir = [UsbPort,':\LENS\Animals Data\NoBregmaREF'];
 % % AnimalMainDir = ['C:\Users\Stefano\Google Drive\Piattaforma Stefano\LENS_SSSA\ELABORAZIONE DATA\_Per_Prove'];
 %%%%%%%%
@@ -27,9 +36,29 @@ AnimalMainDir = ['/Users/alessandro/DATA/Imaging/matlab_sample_data'];
 %                         'GCaMPChR2_1_control'};
 
 %ListAnimalTogether = {  'GCampChR2_TOX2', 'GCampChR2_TOX3',  'GCampChR2_TOX4',  'GCampChR2_TOX5'};        
+ 
+ListAnimalTogether = {  'GCamp_24_sani', 'GCamp_25_sani', 'GCamp_26_sani', 'GCamp_22_onlyrob', 'GCamp_23_onlyrob', 'GCamp_24_onlyrob',...
+    'GCamp_25_onlyrob', 'GCamp_26_onlyrob'};
 
-ListAnimalTogether = {  'GCampChR2_TOX1'};   
-ListAnimalTogether = {  'GCaMP24'};   
+ListAnimalTogether = {  'Tox1_toxin','Tox2_toxin','Tox3_toxin','Tox4_toxin','Tox5_toxin' }; 
+ListAnimalTogether = {  'or19_robot','or20_robot','or21_robot','or23_optostim','or24_optostim',...
+    'or25_optostim','or26_optostim+robot','or27_robot','or28_optostim+robot', 'or29_sham', 'or30_sham'};
+ListAnimalTogether = {  'GCamp_22_onlyrob'};
+ListAnimalTogether = { 'GCaMP-ChR2-22_stroke', 'GCaMP20_Ctrl', 'GCaMP21_Ctrl' , 'GCaMP22_Ctrl', ...
+    'GCaMP22_robot', 'GCaMP23_Ctrl', 'GCaMP23_robot', 'GCaMP24_robot', 'GCaMP25_robot', 'GCaMP26_robot', ...
+    'GCaMP27_Ctrl', 'GCaMP28_Ctrl', 'GCaMP29_Ctrl'};
+ListAnimalTogether = {  'GCaMP23_robot'};
+ListAnimalTogether = { 'GCaMP27_wk02_Ctrl', 'GCaMP27_wk03_Ctrl','GCaMP27_wk04_Ctrl','GCaMP28_wk02_Ctrl'...
+,'GCaMP28_wk03_Ctrl','GCaMP28_wk04_Ctrl','GCaMP29_wk02_Ctrl','GCaMP29_wk03_Ctrl','GCaMP29_wk04_Ctrl'};
+ListAnimalTogether = {'OR9_wk01_sham', 'OR10_wk01_sham', 'OR13_wk01_optostim','OR14_wk01_optostim'...
+'OR15_wk01_optostim+robot','OR16_wk01_optostim+robot','OR17_wk01_optostim+robot'};
+ListAnimalTogether = {'GCaMP24_wk01_ctrl','GCaMP25_wk01_ctrl','GCaMP26_wk01_ctrl'};
+ListAnimalTogether = {'GCaMP-ChR2-1_wk01_ctrl'};
+
+% ListAnimalTogether = {'GCaMP20_Ctrl'};
+
+% ListAnimalTogether = {  'Tox3_toxin'}; %for this animal the threshold was set manually to 10 did not work actually
+% ListAnimalTogether = {  'Tox1_toxin'}; 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -82,7 +111,7 @@ for LATo = 1:length(ListAnimalTogether)
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             
             %Force is now positive
-            ForceSignal     = -dataGCamp.fx;
+            ForceSignal     = dataGCamp.fx;
             Sig = ForceSignal;
             %Threshold 3std
             %%%% Threshold_Noise =  mean(RumoreCella(:,2))+ std(RumoreCella(:,2))*3

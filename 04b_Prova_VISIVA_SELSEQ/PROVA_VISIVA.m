@@ -6,29 +6,37 @@ close all
 clc
 
 %%%
-Animale_Start  = 'GCaMP24';
-% Animale_Start  = [];
+% Animale_Start  = 'or27_robot';
+Animale_Start  = [];
 
 %%%
 CURRFOLDER     = cd;
 %WORKING_FOLDER = [CURRFOLDER,filesep,'Sequenze_Trials_DATA'];
 WORKING_FOLDER = ['C:\Users\asus\Desktop\Sequence_Trials_DATA'];
-WORKING_FOLDER = ['/Users/alessandro/DATA/Imaging/matlab_sample_data'];
+WORKING_FOLDER = ['/Volumes/ALE6TB_DESK/DATA/Imaging/Emilia/Rehab/Sequence_Trials_DATA/'];
+WORKING_FOLDER = '/Volumes/ALE6TB_DESK/DATA/Imaging/Emilia/toxin/Sequence_Trials_DATA/';
+WORKING_FOLDER = '/Users/alessandro/Desktop/toxin/Sequence_Trials_DATA/';
+WORKING_FOLDER = '/Users/alessandro/Desktop/180424_RehabOptogen/Sequence_Trials_DATA';
+WORKING_FOLDER = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/Sequence_Trials_DATA';
 %%%
 % Day_Start      = 'DAY';
 
-
+set(0,'DefaultFigureWindowStyle','docked')
 %%%%%%%%%%%%%%%%%%%%%%%
 
 all_folder_animals = dir(WORKING_FOLDER);
+
+search_str = 'GC';
+% search_str = 'tox';
+% search_str = 'or';
 
 for i_fA = 3:length(all_folder_animals) %for all animals
     
     animal_Name   = all_folder_animals(i_fA,1).name;
     Len_Animal_Name = length(animal_Name);
     
-    if (contains(animal_Name,'GCaMP') && isempty(Animale_Start)) || strcmp(animal_Name,Animale_Start) %if animal
-%     if (contains(animal_Name,'GCamp') && isempty(Animale_Start)) || strcmp(animal_Name,Animale_Start) %if animal
+    if (contains(animal_Name,search_str) && isempty(Animale_Start)) || strcmp(animal_Name,Animale_Start) %if animal
+%     if (contains(animal_Name,search_str) && isempty(Animale_Start)) || strcmp(animal_Name,Animale_Start) %if animal
         
         all_folder_day = dir([WORKING_FOLDER,filesep,animal_Name]);
         
@@ -36,8 +44,8 @@ for i_fA = 3:length(all_folder_animals) %for all animals
             
             folder_day = all_folder_day(i_fD,1).name;
             
-            if (strfind(folder_day,'GCaMP')) %if day
-            %if (strfind(folder_day,'GCamp')) %if day 
+            %if (strfind(folder_day,search_str)) %if day
+            if (strfind(folder_day,search_str)) %if day 
                 %%% day
                 dayNum = folder_day(Len_Animal_Name+2:Len_Animal_Name+3);
                 

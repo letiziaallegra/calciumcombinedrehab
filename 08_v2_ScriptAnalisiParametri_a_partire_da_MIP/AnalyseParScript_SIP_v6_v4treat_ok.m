@@ -14,8 +14,8 @@
 %                   column 10 -> NumberOfRealPeak inside the peak     %non più il num of subpeaks inside the main peak (numPks)
 %                   column 11 -> SlopeInitial (slope between onset _ max value)
 %                   column 12 -> Time to Peak ( [max value peak point - peak start point] )
-%                   column 13 -> Time Distance bw first movement - onset  
-%                   column 14 -> Time Distance bw first movement - time of max 
+%                   column 13 -> Time Distance bw first movement - onset
+%                   column 14 -> Time Distance bw first movement - time of max
 % close all
 clear
 clc
@@ -29,6 +29,7 @@ User = getenv('username');
 UsbPortHD  = 'M';
 % dirAllDataGCamp = [UsbPortHD,':\LENS\_data_MAT_GCamp\'];
 dirAllDataGCamp = ['C:\Users\asus\Google Drive\Piattaforma Stefano\ELABORAZIONE DATA\_data_MAT_GCamp_Store_Analysis_Par'];
+dirAllDataGCamp = ['/Users/alessandro/Desktop/ELABORAZIONE DATA/_data_MAT_GCamp_Store_Analysis_Par'];
 %list animals
 list_dirDataGCamp = dir(dirAllDataGCamp);
 
@@ -95,7 +96,7 @@ end
 Plot_Par_Ok = 0;
 
 %%% SubPlot
-sPr=2;sPc=5;
+sPr=3;sPc=5;
 % sPr=2;sPc=2;
 
 %%% %%% %%% %%% %%% %%% %%% %%% %%%
@@ -126,46 +127,63 @@ for dLGC=3:length(list_dirDataGCamp) %for animals
     
     n_animal_count = n_animal_count+1;
     Treat_old = [];
-       
-    NameAnimal =  list_dirDataGCamp(dLGC,1).name;
+    
+    NameAnimal =  list_dirDataGCamp(dLGC,1).name
     
     
     %%%% select animal
     
-%     if strfind(NameAnimal,'control')
-%         Treat = 0;
-%         
-%     elseif strfind(NameAnimal,'stroke')
-%         Treat = 1;
-%         
-%         if strfind(NameAnimal,'stroke_BoNT')
-%             if isempty(num_Rehab_day)
-%                 Treat   = [2];
-%                 
-%             else
-%                 Treat   = [2 3]; %-> LAST WEEK and FIRST WEEK
-%                 
-%             end
-%             
-%         elseif strfind(NameAnimal,'stroke_Rehab')
-%             if isempty(num_Rehab_day)
-%                 Treat   = [21];
-%                 
-%             else
-%                 Treat   = [21 31]; %-> LAST WEEK and FIRST WEEK
-%                 
-%             end
-%             
-%         elseif strfind(NameAnimal,'stroke_STIM')
-%             
-%                 Treat   = [214]; %stroke reabilitato 4 settimane STIM
-%                 %Treat   = [21 31]; %-> LAST WEEK and FIRST WEEK
-%                 
-%                       
-%         end
-%     end
+    %     if strfind(NameAnimal,'control')
+    %         Treat = 0;
+    %
+    %     elseif strfind(NameAnimal,'stroke')
+    %         Treat = 1;
+    %
+    %         if strfind(NameAnimal,'stroke_BoNT')
+    %             if isempty(num_Rehab_day)
+    %                 Treat   = [2];
+    %
+    %             else
+    %                 Treat   = [2 3]; %-> LAST WEEK and FIRST WEEK
+    %
+    %             end
+    %
+    %         elseif strfind(NameAnimal,'stroke_Rehab')
+    %             if isempty(num_Rehab_day)
+    %                 Treat   = [21];
+    %
+    %             else
+    %                 Treat   = [21 31]; %-> LAST WEEK and FIRST WEEK
+    %
+    %             end
+    %
+    %         elseif strfind(NameAnimal,'stroke_STIM')
+    %
+    %                 Treat   = [214]; %stroke reabilitato 4 settimane STIM
+    %                 %Treat   = [21 31]; %-> LAST WEEK and FIRST WEEK
+    %
+    %
+    %         end
+    %     end
     if contains(NameAnimal,'control')
         Treat = 0;
+        
+    elseif contains(NameAnimal, 'wk04_Ctrl') || contains(NameAnimal, 'wk03_Ctrl') ...
+            || contains(NameAnimal, 'wk02_Ctrl')
+        Treat = 61;
+        
+    elseif contains(NameAnimal, 'Ctrl')
+        Treat = 6;
+        
+    elseif contains(NameAnimal, 'GCaMP-ChR2-1_wk01')
+        Treat = 101;
+        disp(NameAnimal)
+        
+    elseif contains(NameAnimal, 'ctrl')
+        Treat = 100;
+        disp(NameAnimal)
+        
+        
         
     elseif contains(NameAnimal,'stroke')
         Treat = 1;
@@ -190,20 +208,48 @@ for dLGC=3:length(list_dirDataGCamp) %for animals
             
         elseif contains(NameAnimal,'stroke_STIM')
             
-                Treat   = [214]; %stroke reabilitato 4 settimane STIM
-                %Treat   = [21 31]; %-> LAST WEEK and FIRST WEEK
-                
-                      
+            Treat   = [214]; %stroke reabilitato 4 settimane STIM
+            %Treat   = [21 31]; %-> LAST WEEK and FIRST WEEK
+            
+            
         end
+        
     elseif contains(NameAnimal,'TOX')
         
         Treat   = [5];
+        
+    elseif contains(NameAnimal,'sani')
+        
+        Treat   = [6];
+        
+    elseif contains(NameAnimal,'onlyrob')
+        
+        Treat   = [7];
+    elseif contains(NameAnimal,'toxin')
+        
+        Treat   = [8];
+        
+    elseif contains(NameAnimal,'optostim+robot')
+        
+        Treat   = [9];
+        
+    elseif contains(NameAnimal,'optostim')
+        
+        Treat   = [10];
+        
+    elseif contains(NameAnimal,'robot')
+        
+        Treat   = [11];
+        
+    elseif contains(NameAnimal,'sham')
+        
+        Treat   = [12];
     end
     %%%%
     
     
     %list days of one animal
-    PathFile_GCamp = [dirAllDataGCamp,'\',NameAnimal];
+    PathFile_GCamp = [dirAllDataGCamp,filesep,NameAnimal];
     dirNameGCamp   = dir(PathFile_GCamp);
     
     %     %Rehab -> scelgo gli ultimi num_Rehab_day giorni
@@ -211,12 +257,15 @@ for dLGC=3:length(list_dirDataGCamp) %for animals
     %             last_five_days = [16, 17, 18, 19, 20];
     %             dirNameGCamp  = dirNameGCamp([1:2,length(dirNameGCamp)-num_Rehab_day+1:length(dirNameGCamp)]);
     %     end
-  
     
-    
+    wk_0_chk = 1;
+    wk_1_chk = 1;
+    wk_2_chk = 1;
+    wk_3_chk = 1;
+    wk_4_chk = 1;
     for dNGC=3:length(dirNameGCamp) % for days
         
-        if (isempty(num_Rehab_day) && (  (Treat == 0) || (Treat == 1)) )  
+        if (isempty(num_Rehab_day) && (  (Treat == 0) || (Treat == 1)) )
             break %no rehab are excluded
         end
         
@@ -224,11 +273,11 @@ for dLGC=3:length(list_dirDataGCamp) %for animals
         n_day = dNGC-2;
         
         NameFile_GCamp_Day =  dirNameGCamp(dNGC,1).name;
-                
+        
         if contains(NameFile_GCamp_Day,'_Par_MIPSIP_Par') %if exist
             
             %load GCamp
-            load([PathFile_GCamp,'\',NameFile_GCamp_Day])
+            load([PathFile_GCamp,filesep,NameFile_GCamp_Day])
             DayFile = dataGCamp.Info.Date;
             
             for itr=1:length(Treat) %for length Treat
@@ -259,10 +308,10 @@ for dLGC=3:length(list_dirDataGCamp) %for animals
                             Tk = 0;
                         end
                         RehabNameYN  = '';
-                    %%%
-                    %%% Robot 
+                        %%%
+                        %%% Robot
                     elseif Treat(itr) == 21 || Treat(itr) == 214 %LAST REHAB WEEK
-                       
+                        
                         ListDayToUse = [EndDay-num_Rehab_day+1:EndDay];
                         
                         if ismember(str2num(DayFile),ListDayToUse)
@@ -292,7 +341,7 @@ for dLGC=3:length(list_dirDataGCamp) %for animals
                         ListDayToUse = 1:EndDay;
                         RehabNameYN  = 'Rehab_';
                         
-                           
+                        
                     else
                         
                         Tk = 1;
@@ -301,7 +350,7 @@ for dLGC=3:length(list_dirDataGCamp) %for animals
                     end
                 end
                 
-                
+                Tk=1;
                 if Tk %if check
                     
                     if isfield(dataGCamp,'ROI_MIP_SIP_PeaksPar_Fx_Fluo') %if PeaksPar_Fx_Fluo
@@ -408,27 +457,65 @@ for dLGC=3:length(list_dirDataGCamp) %for animals
                                 StdForcePar  = std(ForcePar,[]);
                                 StdFluoPar   = std(FluoPar,[]);
                                 
-                                %update num animal
-                                if Treat== 2 | Treat == 3 | Treat == 21 | Treat == 31 | Treat == 214
-                                    
-                                    if isempty(Treat_old)
-                                        Treat_old = Treat(itr);
-                                        
-                                    elseif Treat_old ~= Treat(itr)
-                                        n_animal_count = n_animal_count +1;
-                                        Treat_old = Treat(itr);
-                                        
-                                    end
-                                end
+%                                 %update num animal
+%                                 if Treat== 2 | Treat == 3 | Treat == 21 | Treat == 31 | Treat == 214
+%                                     
+%                                     if isempty(Treat_old)
+%                                         Treat_old = Treat(itr);
+%                                         
+%                                     elseif Treat_old ~= Treat(itr)
+%                                         n_animal_count = n_animal_count +1;
+%                                         Treat_old = Treat(itr);
+%                                         
+%                                     end
+%                                 end
                                 
                                 %store mean data
                                 Day_int = str2num(DayFile);
                                 i_mP = find(ListDayToUse==Day_int);
+                                i_mP = find([1:5]==Day_int);
+                                wk_sfx = '';
+                                
+                                if Day_int>5
+                                    i_mP = find([6:10]==Day_int);
+                                    if wk_1_chk
+                                        n_animal_count = n_animal_count +1;
+                                        wk_1_chk = 0;
+                                    end
+                                    wk_sfx = '_wk_2';
+                                end
+                                
+                                if Day_int>10
+                                    i_mP = find([11:15]==Day_int);
+                                    if wk_2_chk
+                                        n_animal_count = n_animal_count +1;
+                                        wk_2_chk = 0;
+                                    end
+                                    wk_sfx = '_wk_3';
+                                end
+                                
+                                if Day_int>15
+                                    i_mP = find([16:20]==Day_int);
+                                    if wk_3_chk
+                                        n_animal_count = n_animal_count +1;
+                                        wk_3_chk = 0;
+                                    end
+                                    wk_sfx = '_wk_4';
+                                end
+                                
+                                if Day_int>20
+                                    i_mP = find([21:25]==Day_int);
+                                    if wk_4_chk
+                                        n_animal_count = n_animal_count +1;
+                                        wk_4_chk = 0;
+                                    end
+                                    wk_sfx = '_wk_5';
+                                end
                                 
                                 %store mean data
                                 MeanPar{1,i_mP}                                       = Day_int;
                                 MeanPar{Curr_Par,i_mP}{n_animal_count,1}(Curr_ROI,:)  = [MeanForcePar StdForcePar MeanFluoPar StdFluoPar];
-                                MeanPar{Curr_Par,i_mP}{n_animal_count,2}              = [NameAnimal];
+                                MeanPar{Curr_Par,i_mP}{n_animal_count,2}              = [NameAnimal,wk_sfx];
                                 MeanPar{Curr_Par,i_mP}{n_animal_count,3}              = [NameFile_GCamp_Day];
                                 MeanPar{Curr_Par,i_mP}{n_animal_count,4}              = [Treat(itr)];
                                 
@@ -442,8 +529,8 @@ for dLGC=3:length(list_dirDataGCamp) %for animals
                                     if ip==NumPar %legend at the end
                                         legend(ROINameToTake{ROIToTake},'Location','EastOutside')
                                     end
-                                end  
-                               
+                                end
+                                
                                 
                             end
                             
@@ -457,13 +544,16 @@ for dLGC=3:length(list_dirDataGCamp) %for animals
                 end %end check
                 
             end %end for length Treat
-
+            
             
         elseif strfind(NameFile_GCamp_Day,'.ini') %if exist
             display([NameFile_GCamp_Day, ' is not to be taken']);
-            
+        elseif strfind(NameFile_GCamp_Day,'.DS') %if exist
+            display([NameFile_GCamp_Day, ' is not to be taken']);
+        elseif strfind(NameFile_GCamp_Day,'_Par_MIPSIP.mat') %if exist
+            display([NameFile_GCamp_Day, ' is not to be taken']);
         else
-            display(['missing DataGCamp_Par in,' Path_GCamp_Day]);
+            display(['missing DataGCamp_Par in,' PathFile_GCamp]);
         end      %end if exist
         
     end %end for days
@@ -507,27 +597,3 @@ if ~isempty(MeanPar)
     save(Filename,'MeanPar')
     %%%%%%
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

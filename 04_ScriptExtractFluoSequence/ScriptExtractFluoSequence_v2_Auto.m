@@ -14,7 +14,15 @@ clc
 
 
 CurrDir = cd;
-AnimalMainDir = ['/Users/alessandro/DATA/Imaging/matlab_sample_data'];
+AnimalMainDir = ['/Volumes/ALE6TB_DESK/DATA/Imaging/Emilia/Rehab/MATLAB_DATA_FOLDERS/'];
+AnimalMainDir = '/Volumes/ALE6TB_DESK/DATA/Imaging/Emilia/toxin/MATLAB/';
+AnimalMainDir = '/Users/alessandro/Desktop/toxin/MATLAB';
+AnimalMainDir = '/Users/alessandro/Desktop/180424_RehabOptogen/MATLAB/';
+AnimalMainDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB/';
+AnimalMainDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB_GCaMP27-29';
+AnimalMainDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB_OR';
+AnimalMainDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB_CTRL_190122';
+AnimalMainDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB_CTRL_190117';
 
 %%%%%%%%%%%
 % ListAnimalTogether = {      'GCaMPChR2_7_control', 'GCaMPChR2_17_control','GCaMPChR2_23_control','GCaMPChR2_24_control',...
@@ -24,15 +32,39 @@ AnimalMainDir = ['/Users/alessandro/DATA/Imaging/matlab_sample_data'];
 %                             'GCaMPChR2_14_stroke_BoNT', 'GCaMPChR2_15_stroke_BoNT','GCaMPChR2_16_stroke_BoNT'};
                         
 ListAnimalTogether = { 'GCampChR2_TOX1','GCampChR2_TOX2'};      
-ListAnimalTogether = {  'GCaMP24'}; 
+ListAnimalTogether = {  'GCamp_24_sani', 'GCamp_25_sani', 'GCamp_26_sani', 'GCamp_22_onlyrob', 'GCamp_23_onlyrob', 'GCamp_24_onlyrob',...
+    'GCamp_25_onlyrob', 'GCamp_26_onlyrob'}; 
+ListAnimalTogether = {  'GCamp_26_sani' }; 
+ListAnimalTogether = {  'Tox1_toxin','Tox2_toxin','Tox3_toxin','Tox4_toxin','Tox5_toxin' }; 
+ListAnimalTogether = {  'or19_robot','or20_robot','or21_robot','or23_optostim','or24_optostim',...
+    'or25_optostim','or26_optostim+robot','or27_robot','or28_optostim+robot', 'or29_sham', 'or30_sham'};
+ListAnimalTogether = {'or27_robot'};
+ListAnimalTogether = { 'GCaMP-ChR2-22_stroke', 'GCaMP20_Ctrl', 'GCaMP21_Ctrl' , 'GCaMP22_Ctrl', ...
+    'GCaMP22_robot', 'GCaMP23_Ctrl', 'GCaMP23_robot', 'GCaMP24_robot', 'GCaMP25_robot', 'GCaMP26_robot', ...
+    'GCaMP27_Ctrl', 'GCaMP28_Ctrl', 'GCaMP29_Ctrl'};
+ListAnimalTogether = { 'GCaMP23_robot', 'GCaMP24_robot', 'GCaMP25_robot', 'GCaMP26_robot', ...
+    'GCaMP27_Ctrl', 'GCaMP28_Ctrl', 'GCaMP29_Ctrl'};
+ListAnimalTogether = { 'GCaMP-ChR2-22_stroke'};
+ListAnimalTogether = { 'GCaMP27_wk02_Ctrl', 'GCaMP27_wk03_Ctrl','GCaMP27_wk04_Ctrl','GCaMP28_wk02_Ctrl'...
+,'GCaMP28_wk03_Ctrl','GCaMP28_wk04_Ctrl','GCaMP29_wk02_Ctrl','GCaMP29_wk03_Ctrl','GCaMP29_wk04_Ctrl'};
+ListAnimalTogether = {'OR9_wk01_sham', 'OR10_wk01_sham', 'OR13_wk01_optostim','OR14_wk01_optostim'...
+'OR15_wk01_optostim+robot','OR16_wk01_optostim+robot','OR17_wk01_optostim+robot'};
+ListAnimalTogether = {'GCaMP24_wk01_ctrl','GCaMP25_wk01_ctrl','GCaMP26_wk01_ctrl'};
+ListAnimalTogether = {'GCaMP-ChR2-1_wk01_ctrl'};
 
 %size of the cranial window (mm)
-%Size_CW = 4.4; %(mm)
-Size_CW = 5.25; %(mm)
+Size_CW = 4.4; %(mm)
+% Size_CW = 5.25; %(mm)
+
+
+%making the new folder structure make sure the following folder is the one
+%used in the next script
+
 
 for lat=1:length(ListAnimalTogether)
     
     SAVE_IMAGES_STACK = 1;
+    
 %     SAVE_IMAGES_STACK = 0;
     
     %%%%%%%%%%%
@@ -42,13 +74,29 @@ for lat=1:length(ListAnimalTogether)
     %%%%  Folder
     UsbPort = 'M';
     AnimalDir     = ['C:\LENS\Data Leti'];
-    AnimalDir = ['/Users/alessandro/DATA/Imaging/matlab_sample_data'];
+    AnimalDir = ['/Volumes/ALE6TB_DESK/DATA/Imaging/Emilia/Rehab/MATLAB_DATA_FOLDERS/'];
+    AnimalDir = '/Volumes/ALE6TB_DESK/DATA/Imaging/Emilia/toxin/MATLAB/';
+    AnimalDir = '/Users/alessandro/Desktop/toxin/MATLAB';
+    AnimalDir = '/Users/alessandro/Desktop/180424_RehabOptogen/MATLAB/';
+    AnimalDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB/';
+    AnimalDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB_GCaMP27-29';
+    AnimalDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB_OR';
+    AnimalDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB_CTRL_190122';
+    AnimalDir = '/Volumes/ALE6TB_DESK/Projects/Imaging/DATA/OptoStimRehabFull/MATLAB_CTRL_190117';
+    
+    
     % AnimalDir     = [UsbPort,':\LENS\Animals Data\NoBregmaREF'];
     MainDir       = [AnimalDir,filesep,Animal_name];
     
+    
+    save_to_working_folder = 1;
+    WORKING_FOLDER = ['/Volumes/ALE6TB_DESK/DATA/Imaging/Emilia/toxin/Sequence_Trials_DATA/'];
+    WORKING_FOLDER = ['/Users/alessandro/Desktop/toxin/Sequence_Trials_DATA/'];
+    WORKING_FOLDER = [fileparts(AnimalDir(1:end-1)),filesep,'Sequence_Trials_DATA/'];
+     
     %%%%%%%% load Reference File %%%%%%%%%%%%%%%%%%%%%%%%
     RefDir      = ['C:\Users\asus\Google Drive\Piattaforma Stefano\ELABORAZIONE DATA\Script_Flip_Find_References\MAT_Rot_Trans'];
-    RefDir = ['/Users/alessandro/Dropbox/Code/Matlab/rehab_mat_algs/03b_Script_Flip_Find_References/MAT_Rot_Trans'];
+    RefDir = ['/Users/alessandro/Desktop/ELABORAZIONE DATA/Script_Flip_Find_References/MAT_Rot_Trans'];
     FileRefName = [Animal_name,'_Rot_Trans_Par.mat'];
     if exist([RefDir,filesep,FileRefName])
         % rot_transl
@@ -66,7 +114,7 @@ for lat=1:length(ListAnimalTogether)
         
         if isdir([MainDir,filesep,DayCurrDir])
             
-            filename = ['dataMouseGCamp_',Animal_name,'_',DayCurrDir(1:2),'_Par','.mat'];
+            filename = ['dataMousegcamp_',Animal_name,'_',DayCurrDir(1:2),'_Par','.mat'];
             
             %%% Initial Check %%%
             if exist([MainDir,filesep,DayCurrDir,filesep,filename])
@@ -315,6 +363,33 @@ for lat=1:length(ListAnimalTogether)
             save([Folder_Seq_Name,filesep,Filename],'ImageSequence','-v7.3');
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             
+            if save_to_working_folder
+                %additional copy structure for the next script
+                if ~isdir(WORKING_FOLDER)
+                    
+                    %make Folder where saving
+                    mkdir(WORKING_FOLDER)
+                end
+                new_animal_folder = [WORKING_FOLDER,filesep,Animal_Name];
+                
+                if ~isdir(new_animal_folder)
+                    mkdir(new_animal_folder)
+                end
+                
+                new_day_folder = [new_animal_folder,filesep,Animal_Name,'_',TrialDay,'_SequenceLong_TIF'];
+                
+                if ~isdir(new_day_folder)
+                    mkdir(new_day_folder)
+                end
+                
+                sequence_folder = [new_day_folder,filesep,'SequenceLong'];
+                
+                if ~isdir(sequence_folder)
+                    mkdir(sequence_folder)
+                end
+                
+                save([sequence_folder,filesep,Filename],'ImageSequence','-v7.3');
+            end
             
             %%%%%%% save images %%%%%%%%%%%%
             if SAVE_IMAGES_STACK == 1
@@ -368,3 +443,5 @@ for lat=1:length(ListAnimalTogether)
     
 end
 display('End Process')
+
+

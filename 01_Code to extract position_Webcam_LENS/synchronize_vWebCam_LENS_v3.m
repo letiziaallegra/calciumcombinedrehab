@@ -167,6 +167,14 @@ end
 prove(:,9:11) = [res.Pos res.Vel res.Acc];
 prove = prove(1:end-1,:);
 
+if 0 %test alignment
+    figure('Name','sync')
+    plot(prove(:,1),prove(:,7),'b')
+    hold on
+    plot(prove(:,1),prove(:,9),'g')
+    hold on
+end
+
 newfilename = strcat(filenameFORCE_RAW(1:end-4),'_sync.txt');
 if(fopen(newfilename)==-1)
     save(newfilename, 'prove', '-ascii');

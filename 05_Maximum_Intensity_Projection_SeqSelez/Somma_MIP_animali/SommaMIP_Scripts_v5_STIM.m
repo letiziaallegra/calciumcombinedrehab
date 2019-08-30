@@ -12,18 +12,22 @@ clc
 User = getenv('USERNAME');
 
 %folder = ['C:\Users\',User,'\Google Drive\Piattaforma Stefano\ELABORAZIONE DATA\05_Maximum_Intensity_Projection_SeqSelez\_Store_MIP_SIP_all_Days_and_MAT'];
-folder = ['C:\Users\CNR-SSSUP\Google Drive_SL\Piattaforma Stefano\ELABORAZIONE DATA\05_Maximum_Intensity_Projection_SeqSelez\_Store_MIP_SIP_all_Days_and_MAT'];
-
+folder = ['C:\Users\Dell\Google Drive\Piattaforma Stefano\ELABORAZIONE DATA\05_Maximum_Intensity_Projection_SeqSelez\_Store_MIP_SIP_all_Days_and_MAT'];
+folder = ['/Users/alessandro/Desktop/ELABORAZIONE DATA/05_Maximum_Intensity_Projection_SeqSelez/_Store_MIP_SIP_all_Days_and_MAT/'];
 % ListAnimalTogether = {  'GCaMPChR2_7_control','GCaMPChR2_17_control','GCaMPChR2_23_control','GCaMPChR2_24_control',...
 %                         ...
 %                         'GCaMPChR2_8_stroke', 'GCaMPChR2_9_stroke', 'GCaMPChR2_19_stroke', 'GCaMPChR2_22_stroke','GCaMPChR2_25_stroke','GCaMPChR2_26_stroke'};
 
                     ListAnimalTogether = {      'GCaMPChR2_7_control','GCaMPChR2_17_control','GCaMPChR2_23_control','GCaMPChR2_24_control',...
-                                                'GCaMPChR2_8_stroke', 'GCaMPChR2_9_stroke', 'GCaMPChR2_19_stroke', 'GCaMPChR2_22_stroke','GCaMPChR2_25_stroke', 'GCaMPChR2_26_stroke'...
-                                                'GCaMP16_stroke_BoNT','GCaMP18_stroke_BoNT',...
-                                                'GCaMPChR2_11_stroke_BoNT', 'GCaMPChR2_12_stroke_BoNT',...
-                                                'GCaMPChR2_14_stroke_BoNT', 'GCaMPChR2_15_stroke_BoNT'...
-                                                'GCaMPChR2_OR1_stroke_STIM','GCaMPChR2_OR2_stroke_STIM'};
+                                                'GCamp_25_sani','GCamp_26_sani'};%,...
+                                                %'GCaMPChR2_30_stroke_Rehab','GCaMPChR2_31_stroke_Rehab','GCaMPChR2_32_stroke_Rehab',...
+                                                %'GCamp_22_onlyrob','GCamp_23_onlyrob','GCamp_24_onlyrob','GCamp_25_onlyrob','GCamp_26_onlyrob',...
+                                                %'GCaMPChR2_8_stroke', 'GCaMPChR2_9_stroke', 'GCaMPChR2_19_stroke', 'GCaMPChR2_22_stroke','GCaMPChR2_25_stroke', 'GCaMPChR2_26_stroke'};
+                                                %'GCaMP16_stroke_BoNT','GCaMP18_stroke_BoNT',...
+                                                %'GCaMPChR2_11_stroke_BoNT', 'GCaMPChR2_12_stroke_BoNT',...
+                                                %'GCaMPChR2_14_stroke_BoNT', 'GCaMPChR2_15_stroke_BoNT',...
+                                                %'GCampChR2_TOX1','GCampChR2_TOX2','GCampChR2_TOX3','GCampChR2_TOX4','GCampChR2_TOX5'};
+ 
                     
 
 MIP_max_REHAB1 = zeros(103,103);
@@ -31,12 +35,15 @@ MIP_max_REHAB4 = zeros(103,103);
 MIP_max_STROKE  = zeros(103,103);
 MIP_max_CONTROL = zeros(103,103);
 MIP_max_STIM = zeros(100,100);
+MIP_max_SANI = zeros(100,100);
+
 
 MIP_sum_REHAB1 = zeros(103,103);
 MIP_sum_REHAB4 = zeros(103,103);
 MIP_sum_STROKE  = zeros(103,103);
 MIP_sum_CONTROL = zeros(103,103);
 MIP_sum_STIM = zeros(100,100);
+MIP_sum_SANI = zeros(100,100);
 
 
 iter = zeros(5,1);
@@ -69,21 +76,21 @@ for i=1:length(ListAnimalTogether)
     folderAn = ListAnimalTogether{i};
     
 
-       if strfind(folderAn,'stroke_BoNT')
+       if strfind(folderAn,'stroke_Rehab')
             %rehab 1
-            fileA = load( [folder,'\',folderAn,'\','Im_AlongDays_Week_1_',folderAn,'_Long_SelSeq_MIP']);
+            fileA = load( [folder,filesep,folderAn,filesep,'Im_AlongDays_Week_1_',folderAn,'_Long_SelSeq_MIP']);
             MIP_resize=imresize(fileA.Im_med/max(max(fileA.Im_med)),factor);
             MIP_max_REHAB1  = MIP_max_REHAB1+MIP_resize;
             clear fileA
             %rehab 4
-            fileA = load( [folder,'\',folderAn,'\','Im_AlongDays_Week_4_',folderAn,'_Long_SelSeq_MIP']);
+            fileA = load( [folder,filesep,folderAn,filesep,'Im_AlongDays_Week_4_',folderAn,'_Long_SelSeq_MIP']);
             MIP_sum_resize=imresize(fileA.Im_med/max(max(fileA.Im_med)),factor);
             MIP_max_REHAB4  = MIP_max_REHAB4+MIP_sum_resize;
             clear fileA
             
            
             %rehab 1
-            fileA = load( [folder,'\',folderAn,'\','Im_AlongDays_Week_1_',folderAn,'_Long_SelSeq_SIP']);
+            fileA = load( [folder,filesep,folderAn,filesep,'Im_AlongDays_Week_1_',folderAn,'_Long_SelSeq_SIP']);
             MIP_sum_resize=imresize(fileA.Im_med/max(max(fileA.Im_med)),factor);
             imagesc(double(MIP_resize>Th_single))
             MIP_sum_REHAB1  = MIP_sum_REHAB1+double(MIP_sum_resize>Th_single);
@@ -103,7 +110,7 @@ for i=1:length(ListAnimalTogether)
             
             
             %rehab 4
-            fileA = load( [folder,'\',folderAn,'\','Im_AlongDays_Week_4_',folderAn,'_Long_SelSeq_SIP']);
+            fileA = load( [folder,filesep,folderAn,filesep,'Im_AlongDays_Week_4_',folderAn,'_Long_SelSeq_SIP']);
             MIP_sum_resize=imresize(fileA.Im_med/max(max(fileA.Im_med)),factor);
             imagesc(double(MIP_sum_resize>Th_single))
             MIP_sum_REHAB4  = MIP_sum_REHAB4+double(MIP_sum_resize>Th_single);
@@ -121,17 +128,17 @@ for i=1:length(ListAnimalTogether)
             %%%%%%%%  
             clear fileA
              
-            iter(1) = iter(1)+1;
-            iter(2) = iter(2)+1;
+            iter(3) = iter(3)+1;
+            %iter(6) = iter(6)+1;
 
-       elseif strfind(folderAn,'stroke_STIM')
+       elseif strfind(folderAn,'onlyrob')
             factor=1;
-            fileA = load( [folder,'\',folderAn,'\','Im_AlongDays_',folderAn,'_Long_SelSeq_MIP']);
+            fileA = load( [folder,filesep,folderAn,filesep,'Im_AlongDays_',folderAn,'_Long_SelSeq_MIP']);
             MIP_resize=imresize(fileA.Im_med/max(max(fileA.Im_med)),factor);
             MIP_max_STIM = MIP_max_STIM+MIP_resize;
             clear fileA
             
-            fileA = load( [folder,'\',folderAn,'\','Im_AlongDays_',folderAn,'_Long_SelSeq_SIP']);
+            fileA = load( [folder,filesep,folderAn,filesep,'Im_AlongDays_',folderAn,'_Long_SelSeq_SIP']);
             MIP_sum_resize=imresize(fileA.Im_med/max(max(fileA.Im_med)),factor);
             imagesc(double(MIP_sum_resize>Th_single))
             MIP_sum_STIM  = MIP_sum_STIM+double(MIP_sum_resize>Th_single);
@@ -149,17 +156,44 @@ for i=1:length(ListAnimalTogether)
             %%%%%%%%  
             clear fileA
             
-            iter(5) = iter(5)+1;
+            iter(4) = iter(4)+1;
+            factor = 0.2;
+        elseif strfind(folderAn,'sani')
+            factor=1;
+            fileA = load( [folder,filesep,folderAn,filesep,'Im_AlongDays_',folderAn,'_Long_SelSeq_MIP']);
+            MIP_resize=imresize(fileA.Im_med/max(max(fileA.Im_med)),factor);
+            MIP_max_SANI = MIP_max_SANI+MIP_resize;
+            clear fileA
+            
+            fileA = load( [folder,filesep,folderAn,filesep,'Im_AlongDays_',folderAn,'_Long_SelSeq_SIP']);
+            MIP_sum_resize=imresize(fileA.Im_med/max(max(fileA.Im_med)),factor);
+            imagesc(double(MIP_sum_resize>Th_single))
+            MIP_sum_SANI  = MIP_sum_SANI+double(MIP_sum_resize>Th_single);
+            
+            %%%%%%%%
+            %Area
+            fileAT         = (MIP_sum_resize>Th_single)>0;
+            Area_ST        = [Area_ST; sum(sum(double(fileAT)))*RappPixelmmSTIM^2];
+            %Centroid
+            [y x]          = find( double(fileAT) );
+            cent           = [mean(x) mean(y)];
+            
+            dCen_ST        = [dCen_ST;  cent(2)*RappPixelmmSTIM];
+%             dCen_ST        = [dCen_ST;sqrt(cent(1)^2+cent(2)^2)*RappPixelmmSTIM];
+            %%%%%%%%  
+            clear fileA
+            
+            iter(2) = iter(2)+1;
             factor = 0.2;
             
         elseif strfind(folderAn,'stroke')
             %stroke
-            fileA = load( [folder,'\',folderAn,'\','Im_AlongDays_',folderAn,'_Long_SelSeq_MIP']);
+            fileA = load( [folder,filesep,folderAn,filesep,'Im_AlongDays_',folderAn,'_Long_SelSeq_MIP']);
             MIP_resize=imresize(fileA.Im_med/max(max(fileA.Im_med)),factor);
             MIP_max_STROKE = MIP_max_STROKE+MIP_resize;
             clear fileA
             
-            fileA = load( [folder,'\',folderAn,'\','Im_AlongDays_',folderAn,'_Long_SelSeq_SIP']);
+            fileA = load( [folder,filesep,folderAn,filesep,'Im_AlongDays_',folderAn,'_Long_SelSeq_SIP']);
             MIP_sum_resize=imresize(fileA.Im_med/max(max(fileA.Im_med)),factor);
             imagesc(double(MIP_sum_resize>Th_single))
             MIP_sum_STROKE  = MIP_sum_STROKE+double(MIP_sum_resize>Th_single);
@@ -177,16 +211,16 @@ for i=1:length(ListAnimalTogether)
             %%%%%%%%  
             clear fileA
             
-            iter(3) = iter(3)+1;
+            iter(5) = iter(5)+1;
             
         elseif strfind(folderAn,'control')
             %control
-            fileA = load( [folder,'\',folderAn,'\','Im_AlongDays_',folderAn,'_Long_SelSeq_MIP']);
+            fileA = load( [folder,filesep,folderAn,filesep,'Im_AlongDays_',folderAn,'_Long_SelSeq_MIP']);
             MIP_resize=imresize(fileA.Im_med/max(max(fileA.Im_med)),factor);
             MIP_max_CONTROL = MIP_max_CONTROL+MIP_resize;
             clear fileA
             
-            fileA = load( [folder,'\',folderAn,'\','Im_AlongDays_',folderAn,'_Long_SelSeq_SIP']);
+            fileA = load( [folder,filesep,folderAn,filesep,'Im_AlongDays_',folderAn,'_Long_SelSeq_SIP']);
             MIP_sum_resize=imresize(fileA.Im_med/max(max(fileA.Im_med)),factor);
             imagesc(double(MIP_sum_resize>Th_single))
             MIP_sum_CONTROL  = MIP_sum_CONTROL+double(MIP_sum_resize>Th_single);
@@ -203,7 +237,7 @@ for i=1:length(ListAnimalTogether)
             %%%%%%%%  
             clear fileA
             
-            iter(4) = iter(4)+1;
+            iter(1) = iter(1)+1;
             
         end
     
@@ -272,24 +306,25 @@ sz = size(MIP_max_REHAB1);
 % THS = 3/5;
 THS = 2/5;
 figSIP_T = figure('Name','SIP')
-subplot(233)
-MIP_sum_REHAB1_T = MIP_sum_REHAB1/iter(1);
-MIP_sum_REHAB1_T(MIP_sum_REHAB1_T<=THS) = 0;
-imagesc(MIP_sum_REHAB1_T)
+
+subplot(232)
+MIP_sum_SANI_T = MIP_sum_SANI/iter(2);
+MIP_sum_SANI_T(MIP_sum_SANI<=THS) = 0;
+imagesc(MIP_sum_SANI_T)
 caxis([0 1])
-title('Rehab 1st week')
+title('Control 2')
 changeLabel_MIP(sz(1),sz(2),1);
 
-subplot(234)
-MIP_sum_REHAB4_T = MIP_sum_REHAB4/iter(2);
+subplot(233)
+MIP_sum_REHAB4_T = MIP_sum_REHAB4/iter(3);
 MIP_sum_REHAB4_T(MIP_sum_REHAB4_T<=THS) = 0;
 imagesc(MIP_sum_REHAB4_T)
 caxis([0 1])
-title('Rehab 4th week')
+title('Robot 4w')
 changeLabel_MIP(sz(1),sz(2),1);
 
-subplot(232)
-MIP_sum_STROKE_T = MIP_sum_STROKE/iter(3);
+subplot(235)
+MIP_sum_STROKE_T = MIP_sum_STROKE/iter(5);
 MIP_sum_STROKE_T(MIP_sum_STROKE_T<=THS) = 0;
 imagesc(MIP_sum_STROKE_T)
 caxis([0 1])
@@ -297,20 +332,20 @@ title('Stroke 4th week')
 changeLabel_MIP(sz(1),sz(2),1);
 
 subplot(231)
-MIP_sum_CONTROL_T = MIP_sum_CONTROL/iter(3);
+MIP_sum_CONTROL_T = MIP_sum_CONTROL/iter(1);
 MIP_sum_CONTROL_T(MIP_sum_CONTROL_T<=THS) = 0;
 imagesc(MIP_sum_CONTROL_T)
 caxis([0 1])
 title('Control')
 changeLabel_MIP(sz(1),sz(2),1);
 
-subplot(235)
-MIP_sum_STIM_Tpre = MIP_sum_STIM/iter(5);
+subplot(234)
+MIP_sum_STIM_Tpre = MIP_sum_STIM/iter(4);
 MIP_sum_STIM_T= MIP_sum_STIM_Tpre(1:factordiv,1:factordiv);
 MIP_sum_STIM_T(MIP_sum_STIM(1:factordiv,1:factordiv)<=THS) = 0;
 imagesc(MIP_sum_STIM_T)
 caxis([0 1])
-title('Rehab 4st week STIM')
+title('Robot 4w 2')
 changeLabel_MIP(sz(1),sz(2),1);
 
 colormap jet
@@ -325,13 +360,13 @@ Area_Pixel = RappPixelmm^2;% [mm2] -> quadrato totale di 4.4mm di lato disposti 
 Area_PixelSTIM = RappPixelmmSTIM^2;
 MIP_sum_CONTROL_T_1 = MIP_sum_CONTROL_T>0;
 MIP_sum_STROKE_T_1  = MIP_sum_STROKE_T>0;
-MIP_sum_REHAB1_T_1  = MIP_sum_REHAB1_T>0;
+MIP_sum_SANI_T_1  = MIP_sum_SANI_T>0;
 MIP_sum_REHAB4_T_1  = MIP_sum_REHAB4_T>0;
 MIP_sum_STIM_T_1  = MIP_sum_STIM_T>0;
 
 Area_CNT = sum(sum(double(MIP_sum_CONTROL_T_1)))*Area_Pixel;
 Area_STR = sum(sum(double(MIP_sum_STROKE_T_1)))*Area_Pixel;
-Area_R1W = sum(sum(double(MIP_sum_REHAB1_T_1)))*Area_Pixel;
+Area_R1W = sum(sum(double(MIP_sum_SANI_T_1)))*Area_Pixel;
 Area_R4W = sum(sum(double(MIP_sum_REHAB4_T_1)))*Area_Pixel;
 Area_S4W = sum(sum(double(MIP_sum_STIM_T_1)))*Area_PixelSTIM;
 Area = [Area_CNT, Area_STR, Area_R1W, Area_R4W, Area_S4W];
@@ -347,7 +382,7 @@ cent = [mean(x) mean(y)];
 dCenSTR         = sqrt(cent(1)^2+cent(2)^2)* RappPixelmm;
 figure(figSIP_T); subplot(232); hold on; scatter(cent(1), cent(2),'r')
 
-[y x] = find( MIP_sum_REHAB1_T_1 );
+[y x] = find( MIP_sum_SANI_T_1 );
 cent = [mean(x) mean(y)];
 dCenR1W        = sqrt(cent(1)^2+cent(2)^2)* RappPixelmm;
 figure(figSIP_T); subplot(233); hold on; scatter(cent(1), cent(2),'r')
@@ -366,7 +401,7 @@ dCentroid = [dCenCNT, dCenSTR, dCenR1W, dCenR4W, dCenS4W];
 
 figure
 scatter(dCentroid,Area)
-text(dCentroid+0.05, Area+0.05,{'Control','Stroke','Rehab1w','Rehab4w','RSTIM4w'})
+text(dCentroid+0.05, Area+0.05,{'Control','Control2','Rbt 4w','Rbt 4w2','stroke'})
 xlabel('Distance from Bregma [mm]')
 ylabel('Area [mm_{^2}]')
 
@@ -381,4 +416,4 @@ std_dCentroid_SingAn   = [std(dCen_CN), std(dCen_ST), std(dCen_R1), std(dCen_R4)
 % scatter(mean_dCentroid_SingAn,mean_Area_SingAn,'r')
 figure
 errorbarxy(mean_dCentroid_SingAn, mean_Area_SingAn , std_dCentroid_SingAn, std_dCentroid_SingAn, std_Area_SingAn, std_Area_SingAn)
-text(mean_dCentroid_SingAn+0.05,mean_Area_SingAn+0.05, {'Control','Stroke','Rehab1w','Rehab4w','RSTIM4w'})
+text(mean_dCentroid_SingAn+0.05,mean_Area_SingAn+0.05, {'Control','Control2','Rbt 4w','Rbt 4w2','stroke'})
